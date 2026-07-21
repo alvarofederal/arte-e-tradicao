@@ -1,0 +1,167 @@
+/* ══════════════════════════════════════════════════════════════════
+   Arte & Tradição — Sistema de design em cores pastéis
+   Inspiração: arte sacra, folha de ouro, cores litúrgicas suaves.
+   Escopo: tudo dentro de .arte-site (grupo de rotas do site público).
+   Isolado do tema escuro do painel (Courtesyfy) — ver overrides no fim.
+   ══════════════════════════════════════════════════════════════════ */
+
+.arte-site {
+  --arte-cream:      #FBF6EC; /* pergaminho / marfim */
+  --arte-cream-2:    #F4EADB; /* creme mais quente */
+  --arte-cream-3:    #EFE3CF; /* creme sombreado */
+  --arte-gold:       #C9A24B; /* folha de ouro */
+  --arte-gold-soft:  #E4CB90; /* ouro claro */
+  --arte-gold-deep:  #A67C2E; /* ouro envelhecido */
+  --arte-sage:       #A9BFA2; /* verde litúrgico suave */
+  --arte-sage-deep:  #6E8567;
+  --arte-blue:       #A9C1D9; /* azul mariano */
+  --arte-blue-deep:  #5E7C99;
+  --arte-blush:      #E4C3C0; /* rosa de Santa Teresinha */
+  --arte-blush-deep: #B87F7C;
+  --arte-ink:        #3B322E; /* marrom-carvão (texto) */
+  --arte-ink-soft:   #6B5F57; /* texto secundário */
+  --arte-line:       rgba(59, 50, 46, 0.12);
+  --arte-line-gold:  rgba(166, 124, 46, 0.28);
+
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(228, 203, 144, 0.35), transparent 60%),
+    radial-gradient(900px 500px at 100% 100%, rgba(169, 193, 162, 0.22), transparent 55%),
+    var(--arte-cream);
+  color: var(--arte-ink);
+  font-family: var(--font-open-sans), var(--font-geist-sans), system-ui, sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Tipografia de exibição — serifa clássica, reverente */
+.arte-site h1,
+.arte-site h2,
+.arte-site h3,
+.arte-site .arte-display {
+  font-family: var(--font-arte-serif), Georgia, "Times New Roman", serif;
+  color: var(--arte-ink);
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.arte-site p { color: var(--arte-ink-soft); }
+
+/* ── Fio dourado decorativo ── */
+.arte-rule {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, var(--arte-line-gold) 20%, var(--arte-gold) 50%, var(--arte-line-gold) 80%, transparent);
+  border: 0;
+}
+.arte-rule-short { width: 72px; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--arte-gold-soft), var(--arte-gold), var(--arte-gold-deep)); }
+
+/* ── Selo / eyebrow ── */
+.arte-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--arte-gold-deep);
+}
+
+/* ── Botões ── */
+.arte-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+  padding: 0.8rem 1.5rem; border-radius: 999px;
+  font-weight: 600; font-size: 0.95rem; line-height: 1;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+.arte-btn-primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--arte-gold-soft), var(--arte-gold) 45%, var(--arte-gold-deep));
+  box-shadow: 0 8px 20px rgba(166, 124, 46, 0.28), inset 0 1px 0 rgba(255,255,255,0.35);
+}
+.arte-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(166, 124, 46, 0.34), inset 0 1px 0 rgba(255,255,255,0.4); }
+.arte-btn-ghost {
+  color: var(--arte-ink);
+  background: rgba(255,255,255,0.6);
+  border: 1px solid var(--arte-line);
+  backdrop-filter: blur(6px);
+}
+.arte-btn-ghost:hover { transform: translateY(-2px); border-color: var(--arte-line-gold); background: rgba(255,255,255,0.85); }
+.arte-btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
+.arte-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.arte-btn:disabled:hover { transform: none; }
+
+/* ── Cartões ── */
+.arte-card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.85), rgba(255,255,255,0.55));
+  border: 1px solid var(--arte-line);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 2px rgba(59,50,46,0.04), 0 18px 40px -24px rgba(59,50,46,0.25);
+  transition: transform 0.3s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.arte-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--arte-line-gold);
+  box-shadow: 0 1px 2px rgba(59,50,46,0.05), 0 34px 60px -30px rgba(166,124,46,0.4);
+}
+
+/* Ícone circular por produto — tinturas pastéis */
+.arte-ic { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; }
+.arte-ic-gold  { background: rgba(201,162,75,0.16);  color: var(--arte-gold-deep); }
+.arte-ic-sage  { background: rgba(169,191,162,0.28); color: var(--arte-sage-deep); }
+.arte-ic-blush { background: rgba(228,195,192,0.32); color: var(--arte-blush-deep); }
+.arte-ic-blue  { background: rgba(169,193,217,0.30); color: var(--arte-blue-deep); }
+
+/* Etiqueta de "novo" */
+.arte-tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.22rem 0.6rem; border-radius: 999px;
+  background: rgba(169,191,162,0.35); color: var(--arte-sage-deep);
+}
+.arte-tag-hist { background: rgba(201,162,75,0.20); color: var(--arte-gold-deep); }
+
+/* Halo suave atrás do herói (auréola) */
+.arte-halo {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+}
+.arte-halo::before {
+  content: ""; position: absolute; top: -140px; left: 50%; transform: translateX(-50%);
+  width: 520px; height: 520px; border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(228,203,144,0.55), rgba(228,203,144,0.12) 45%, transparent 70%);
+  filter: blur(8px);
+}
+
+/* Navbar em vidro */
+.arte-nav {
+  background: rgba(251,246,236,0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--arte-line);
+}
+
+/* Faixa de seção alternada */
+.arte-band { background: linear-gradient(180deg, rgba(244,234,219,0.0), rgba(239,227,207,0.6)); }
+
+/* Rodapé */
+.arte-footer { background: linear-gradient(180deg, #efe3cf, #e7d9c0); border-top: 1px solid var(--arte-line-gold); }
+
+/* Links do menu */
+.arte-navlink { color: var(--arte-ink-soft); font-weight: 500; text-decoration: none; transition: color 0.15s; }
+.arte-navlink:hover { color: var(--arte-gold-deep); }
+
+/* Animação de entrada suave */
+@keyframes arte-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.arte-rise { animation: arte-rise 0.7s cubic-bezier(0.25,0.1,0.25,1) both; }
+.arte-rise-2 { animation-delay: 0.08s; }
+.arte-rise-3 { animation-delay: 0.16s; }
+.arte-rise-4 { animation-delay: 0.24s; }
+@media (prefers-reduced-motion: reduce) { .arte-rise { animation: none; } }
+
+/* ══════════════════════════════════════════════════════════════════
+   Overrides: neutralizam vazamentos do tema escuro global (globals.css)
+   quando a classe .dark está no <html>. Carregado depois de globals.css,
+   então vence empates de especificidade.
+   ══════════════════════════════════════════════════════════════════ */
+.dark .arte-site h1, .dark .arte-site h2, .dark .arte-site h3 { color: var(--arte-ink); }
+.dark .arte-site p { color: var(--arte-ink-soft); }
+.dark .arte-site label { color: var(--arte-ink); }
+.dark .arte-site input:not([type=checkbox]):not([type=radio]) {
+  background: #fff !important; border-color: var(--arte-line) !important; color: var(--arte-ink) !important;
+}
+.dark .arte-site input::placeholder { color: var(--arte-ink-soft) !important; }

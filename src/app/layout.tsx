@@ -23,26 +23,26 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://courtesyfy.com.br"),
+  metadataBase: new URL("https://arteetradicao.com.br"),
   title: {
-    default: "Courtesyfy",
-    template: "%s | Courtesyfy",
+    default: "Arte & Tradição",
+    template: "%s | Arte & Tradição",
   },
-  description: "Gestão de campanhas promocionais com chaves únicas. Crie campanhas, gere QR Codes e valide resgates com facilidade.",
-  keywords: ["cortesias", "campanhas promocionais", "QR Code", "chaves únicas", "gestão de promoções"],
-  authors: [{ name: "Courtesyfy", url: "https://courtesyfy.com.br" }],
+  description: "Quebra-cabeças, jogos da memória e álbuns de figurinhas dos Santos. Arte sacra que une fé, tradição e o prazer de brincar em família.",
+  keywords: ["santos", "quebra-cabeça", "jogo da memória", "álbum de figurinhas", "arte sacra", "católico", "devoção"],
+  authors: [{ name: "Arte & Tradição" }],
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://courtesyfy.com.br",
-    siteName: "Courtesyfy",
-    title: "Courtesyfy — Campanhas com chaves únicas",
-    description: "Crie campanhas, gere QR Codes e valide resgates com facilidade.",
+    url: "https://arteetradicao.com.br",
+    siteName: "Arte & Tradição",
+    title: "Arte & Tradição — Devoção que se brinca",
+    description: "Quebra-cabeças, jogos da memória e álbuns de figurinhas dos Santos.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Courtesyfy",
-    description: "Gestão de campanhas promocionais com chaves únicas.",
+    title: "Arte & Tradição",
+    description: "Produtos devocionais lúdicos inspirados nos Santos.",
   },
   robots: {
     index: true,
@@ -75,7 +75,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       {/* Script de tema roda antes da hidratação — sem flash */}
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
