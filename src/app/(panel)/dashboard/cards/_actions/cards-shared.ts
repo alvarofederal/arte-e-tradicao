@@ -16,6 +16,30 @@ export interface CardEstilo {
   versoBg: string
   versoTextoCor: string
   acento: string
+  // manipulação da imagem (enquadramento)
+  imgScale: number  // zoom (1 = normal)
+  imgPosX: number   // posição horizontal 0–100 (%)
+  imgPosY: number   // posição vertical 0–100 (%)
+}
+
+/** Visão achatada usada para renderizar o card (conteúdo + estilo). */
+export type CardView = CardEstilo & {
+  numero: string
+  nome: string
+  dataFesta: string
+  descricao: string
+  imagem: string | null
+}
+
+export function cardToView(c: CardRegistro): CardView {
+  return {
+    ...c.estilo,
+    numero: c.numero,
+    nome: c.nome,
+    dataFesta: c.dataFesta,
+    descricao: c.descricao,
+    imagem: c.imagem,
+  }
 }
 
 export interface SalvarCardInput {

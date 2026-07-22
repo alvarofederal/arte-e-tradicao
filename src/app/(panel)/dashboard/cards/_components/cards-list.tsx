@@ -3,46 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import { toast } from "sonner"
-import { Plus, Pencil, Trash2, Sparkles, Cross, Church, Palette } from "lucide-react"
+import { Plus, Pencil, Trash2, Sparkles, Palette } from "lucide-react"
 import type { CardRegistro } from "../_actions/cards-shared"
+import { cardToView } from "../_actions/cards-shared"
 import { excluirCard } from "../_actions/cards-actions"
-
-const SERIF = "var(--font-arte-serif), Georgia, serif"
-
-function MiniFront({ card }: { card: CardRegistro }) {
-  const e = card.estilo
-  const bg = e.usarGradiente ? `linear-gradient(160deg, ${e.frenteBg}, ${e.frenteBg2})` : e.frenteBg
-  const borda = e.bordaEstilo === "nenhuma" ? {} : { border: `3px solid ${e.bordaCor}` }
-  return (
-    <div style={{ aspectRatio: "5 / 7", borderRadius: 8, overflow: "hidden", background: bg, display: "flex", flexDirection: "column", position: "relative", ...borda }}>
-      {card.numero && (
-        <div style={{ position: "absolute", top: 5, right: 5, zIndex: 3, width: 22, height: 22, borderRadius: "50%", background: "#F6EFDD", border: "1.5px solid #C9A24B", display: "grid", placeItems: "center" }}>
-          <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 9, color: "#3B322E", lineHeight: 1 }}>{card.numero}</span>
-        </div>
-      )}
-      <div style={{ flex: 1, overflow: "hidden", display: "grid", placeItems: "center" }}>
-        {card.imagem ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={card.imagem} alt={card.nome} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        ) : (
-          <Cross size={18} style={{ color: e.bordaCor, opacity: 0.7 }} />
-        )}
-      </div>
-      <div style={{ background: e.faixaCor, borderTop: `1.5px solid ${e.bordaCor}`, display: "flex", alignItems: "center", gap: 2, padding: "3px 4px", minHeight: 22 }}>
-        <span style={{
-          flex: 1, fontFamily: SERIF, fontSize: 8, fontWeight: 700, color: e.nomeCor, lineHeight: 1.05,
-          textAlign: "center", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-        }}>
-          {card.nome}
-        </span>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: 12 }}>
-          <Church size={9} style={{ color: e.subtituloCor }} />
-          {card.dataFesta && <span style={{ fontSize: 6, color: e.subtituloCor, fontWeight: 700, lineHeight: 1 }}>{card.dataFesta}</span>}
-        </div>
-      </div>
-    </div>
-  )
-}
+import { CardFace } from "./card-faces"
 
 export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
   const [cards, setCards] = useState(initialCards)
@@ -95,8 +60,8 @@ export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
           {cards.map((card) => (
             <div key={card.id} className="dash-card p-3">
-              <Link href={`/dashboard/cards/${card.id}`} className="block" title={`Alterar: ${card.nome}`}>
-                <MiniFront card={card} />
+              <Link href={`/dashboard/cards/${card.id}`} className="flex justify-center" title={`Alterar: ${card.nome}`}>
+                <CardFace view={cardToView(card)} side="front" width={150} />
               </Link>
               <div className="mt-2.5 px-0.5">
                 <p className="dash-title truncate text-sm font-semibold" title={card.nome}>

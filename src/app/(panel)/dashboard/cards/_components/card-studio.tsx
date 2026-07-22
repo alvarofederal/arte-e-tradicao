@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
 import {
-  Upload, Trash2, Download, Cross, Church, Sparkles, Info, Copy,
-  Save, Loader2, ArrowLeft,
+  Upload, Trash2, Download, Sparkles, Info, Copy,
+  Save, Loader2, ArrowLeft, Printer, Crosshair,
 } from "lucide-react"
 import "./card-studio.css"
 import type { BordaEstilo, CardEstilo, CardRegistro } from "../_actions/cards-shared"
 import { salvarCard } from "../_actions/cards-actions"
+import { CardFace } from "./card-faces"
 
-/* ─── Modelo do design em edição ─────────────────────────────── */
 interface Design extends CardEstilo {
   numero: string
   nome: string
@@ -21,32 +21,17 @@ interface Design extends CardEstilo {
   imagem: string | null
 }
 
-// Card novo em branco — padrão do print (moldura, selo de número, faixa creme).
 const NOVO: Design = {
-  numero: "",
-  nome: "",
-  dataFesta: "",
-  descricao: "",
-  imagem: null,
-  frenteBg: "#EEE6D5",
-  frenteBg2: "#E3D8C0",
-  usarGradiente: false,
-  faixaCor: "#F5ECD6",   // faixa creme
-  nomeCor: "#2E2A26",    // tinta escura
-  subtituloCor: "#3B322E", // cor da igrejinha + data
-  brilho: false,
-  holografico: false,
-  bordaEstilo: "classica",
-  bordaCor: "#2F5AA8",   // moldura (cor por card)
-  bordaLargura: 10,
-  versoBg: "#FBF6EC",
-  versoTextoCor: "#2E2A26",
-  acento: "#C9A24B",
+  numero: "", nome: "", dataFesta: "", descricao: "", imagem: null,
+  frenteBg: "#EEE6D5", frenteBg2: "#E3D8C0", usarGradiente: false,
+  faixaCor: "#F5ECD6", nomeCor: "#2E2A26", subtituloCor: "#3B322E",
+  brilho: false, holografico: false,
+  bordaEstilo: "classica", bordaCor: "#2F5AA8", bordaLargura: 10,
+  versoBg: "#FBF6EC", versoTextoCor: "#2E2A26", acento: "#C9A24B",
+  imgScale: 1, imgPosX: 50, imgPosY: 50,
 }
 
 const CARD_W = 260
-const CARD_H = Math.round((CARD_W * 7) / 5) // proporção figurinha 5:7
-const SERIF = "var(--font-arte-serif), Georgia, 'Times New Roman', serif"
 
 function extrairEstilo(d: Design): CardEstilo {
   const { numero, nome, dataFesta, descricao, imagem, ...estilo } = d
@@ -54,10 +39,7 @@ function extrairEstilo(d: Design): CardEstilo {
   return estilo
 }
 function cardParaDesign(c: CardRegistro): Design {
-  return {
-    ...NOVO, ...c.estilo,
-    numero: c.numero, nome: c.nome, dataFesta: c.dataFesta, descricao: c.descricao, imagem: c.imagem,
-  }
+  return { ...NOVO, ...c.estilo, numero: c.numero, nome: c.nome, dataFesta: c.dataFesta, descricao: c.descricao, imagem: c.imagem }
 }
 
 export function CardStudio({ card }: { card?: CardRegistro | null }) {
@@ -86,7 +68,7 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
     reader.onload = () => {
       const img = new Image()
       img.onload = () => {
-        const maxW = 900
+        const maxW = 1000
         const scale = Math.min(1, maxW / img.width)
         const w = Math.round(img.width * scale)
         const h = Math.round(img.height * scale)
@@ -96,58 +78,43 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
         const ctx = canvas.getContext("2d")
         if (!ctx) return
         ctx.drawImage(img, 0, 0, w, h)
-        set("imagem", canvas.toDataURL("image/jpeg", 0.85))
+        setD((prev) => ({ ...prev, imagem: canvas.toDataURL("image/jpeg", 0.86), imgScale: 1, imgPosX: 50, imgPosY: 50 }))
       }
       img.src = reader.result as string
     }
     reader.readAsDataURL(file)
   }
 
-  async function salvar() {
-    if (!d.nome.trim()) {
-      toast.error("Dê um nome ao Santo antes de salvar.")
-      return
+  function payload() {
+    return {
+      id: cardId, numero: d.numero, nome: d.nome, dataFesta: d.dataFesta,
+      descricao: d.descricao, imagem: d.imagem, estilo: extrairEstilo(d),
     }
+  }
+
+  async function salvar() {
+    if (!d.nome.trim()) { toast.error("Dê um nome ao Santo antes de salvar."); return }
     setSalvando(true)
     try {
-      const res = await salvarCard({
-        id: cardId,
-        numero: d.numero,
-        nome: d.nome,
-        dataFesta: d.dataFesta,
-        descricao: d.descricao,
-        imagem: d.imagem,
-        estilo: extrairEstilo(d),
-      })
-      if (!res.ok) {
-        toast.error(res.error)
-        return
-      }
+      const res = await salvarCard(payload())
+      if (!res.ok) { toast.error(res.error); return }
       toast.success(editando ? "Alterações salvas!" : "Card criado!")
       router.push("/dashboard/cards")
       router.refresh()
-    } catch {
-      toast.error("Erro ao salvar.")
-    } finally {
-      setSalvando(false)
-    }
+    } catch { toast.error("Erro ao salvar.") }
+    finally { setSalvando(false) }
   }
 
-  function bordaStyle(): React.CSSProperties {
-    switch (d.bordaEstilo) {
-      case "nenhuma": return {}
-      case "solida": return { border: `${d.bordaLargura}px solid ${d.bordaCor}` }
-      case "dupla": return { border: `${d.bordaLargura}px double ${d.bordaCor}` }
-      case "classica": return {
-        border: `${d.bordaLargura}px solid ${d.bordaCor}`,
-        boxShadow: `inset 0 0 0 2px rgba(255,255,255,0.35)`,
-      }
-    }
+  async function imprimir() {
+    if (!d.nome.trim()) { toast.error("Dê um nome ao Santo antes de imprimir."); return }
+    setSalvando(true)
+    try {
+      const res = await salvarCard(payload())
+      if (!res.ok) { toast.error(res.error); return }
+      router.push(`/print/card/${res.card.id}`)
+    } catch { toast.error("Erro ao abrir a prévia.") }
+    finally { setSalvando(false) }
   }
-
-  const frenteFundo = d.usarGradiente
-    ? `linear-gradient(160deg, ${d.frenteBg}, ${d.frenteBg2})`
-    : d.frenteBg
 
   async function exportar(ref: React.RefObject<HTMLDivElement | null>, nomeArq: string) {
     if (!ref.current) return
@@ -174,84 +141,8 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
     d.nome.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
       .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "card"
 
-  /* ─── FRENTE (padrão do print) ─── */
-  const Frente = (
-    <div ref={frontRef} style={{
-      width: CARD_W, height: CARD_H, borderRadius: 12, overflow: "hidden",
-      background: frenteFundo, position: "relative", display: "flex", flexDirection: "column", ...bordaStyle(),
-    }}>
-      {/* Selo do número */}
-      {d.numero && (
-        <div style={{
-          position: "absolute", top: 12, right: 12, zIndex: 4,
-          width: 38, height: 38, borderRadius: "50%",
-          background: "#F6EFDD", border: "2px solid #C9A24B",
-          display: "grid", placeItems: "center", boxShadow: "0 2px 6px rgba(0,0,0,0.28)",
-        }}>
-          <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 15, color: "#3B322E", lineHeight: 1 }}>{d.numero}</span>
-        </div>
-      )}
-
-      {/* Imagem */}
-      <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-        {d.imagem ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={d.imagem} alt={d.nome} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        ) : (
-          <div style={{
-            width: "100%", height: "100%", display: "grid", placeItems: "center",
-            color: "rgba(59,50,46,0.35)", textAlign: "center", padding: 16,
-            background: "repeating-linear-gradient(45deg, rgba(59,50,46,0.03) 0 10px, transparent 10px 20px)",
-          }}>
-            <div><Upload size={26} style={{ margin: "0 auto 8px" }} /><p style={{ fontSize: 12, fontWeight: 600 }}>Envie a imagem do Santo</p></div>
-          </div>
-        )}
-      </div>
-
-      {/* Faixa creme: nome + igrejinha + data */}
-      <div className={`cardstudio-shine${d.holografico ? " cardstudio-holo" : ""}`} style={{
-        background: d.faixaCor, borderTop: `2px solid ${d.bordaCor}`,
-        display: "flex", alignItems: "center", gap: 4, padding: "6px 8px", minHeight: 46,
-      }}>
-        <div style={{ flex: 1, textAlign: "center", position: "relative", zIndex: 2, paddingLeft: 22 }}>
-          <span style={{ fontFamily: SERIF, fontSize: 14.5, fontWeight: 700, color: d.nomeCor, lineHeight: 1.05, display: "block" }}>
-            {d.nome || "Nome do Santo"}
-          </span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 2, minWidth: 22 }}>
-          <Church size={14} style={{ color: d.subtituloCor }} />
-          {d.dataFesta && <span style={{ fontSize: 8.5, color: d.subtituloCor, marginTop: 1, fontWeight: 700 }}>{d.dataFesta}</span>}
-        </div>
-      </div>
-    </div>
-  )
-
-  /* ─── VERSO ─── */
-  const Verso = (
-    <div ref={backRef} style={{
-      width: CARD_W, height: CARD_H, borderRadius: 12, overflow: "hidden",
-      background: d.versoBg, position: "relative", display: "flex", flexDirection: "column", padding: 18, ...bordaStyle(),
-    }}>
-      <div style={{ textAlign: "center" }}>
-        <Cross size={18} style={{ color: d.acento, margin: "0 auto" }} />
-        <div style={{ fontFamily: SERIF, fontSize: 16, fontWeight: 700, color: d.versoTextoCor, marginTop: 6, lineHeight: 1.1 }}>
-          {d.nome || "Nome do Santo"}
-        </div>
-        {d.numero && <div style={{ fontSize: 9, color: d.acento, fontWeight: 700, marginTop: 2 }}>Nº {d.numero}</div>}
-        <div style={{ width: 46, height: 2, borderRadius: 2, background: d.acento, margin: "8px auto 0" }} />
-      </div>
-      <p style={{ flex: 1, marginTop: 12, fontSize: 11, lineHeight: 1.55, color: d.versoTextoCor, textAlign: "center", overflow: "hidden" }}>
-        {d.descricao || "Descrição do Santo..."}
-      </p>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 9, color: d.acento, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
-        <Church size={11} /> {d.dataFesta || "Arte & Tradição"}
-      </div>
-    </div>
-  )
-
   return (
     <div>
-      {/* Cabeçalho + voltar */}
       <div className="mb-5">
         <Link href="/dashboard/cards" className="dash-muted mb-3 inline-flex items-center gap-1.5 text-sm hover:opacity-80">
           <ArrowLeft size={15} /> Voltar para a lista
@@ -298,6 +189,24 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
             <p className="dash-muted mt-2 text-xs">JPG ou PNG, de preferência vertical. É otimizada automaticamente ao enviar.</p>
           </Section>
 
+          {d.imagem && (
+            <Section title="Enquadramento da imagem">
+              <p className="dash-muted -mt-1 mb-1 text-xs">Ajuste para o Santo ficar bem posicionado no card.</p>
+              <Field label={`Zoom (${d.imgScale.toFixed(2)}×)`}>
+                <input type="range" min={0.5} max={3} step={0.02} value={d.imgScale} onChange={(e) => set("imgScale", Number(e.target.value))} className="w-full" />
+              </Field>
+              <Field label={`Posição horizontal (${Math.round(d.imgPosX)}%)`}>
+                <input type="range" min={0} max={100} value={d.imgPosX} onChange={(e) => set("imgPosX", Number(e.target.value))} className="w-full" />
+              </Field>
+              <Field label={`Posição vertical (${Math.round(d.imgPosY)}%)`}>
+                <input type="range" min={0} max={100} value={d.imgPosY} onChange={(e) => set("imgPosY", Number(e.target.value))} className="w-full" />
+              </Field>
+              <button onClick={() => setD((p) => ({ ...p, imgScale: 1, imgPosX: 50, imgPosY: 50 }))} className="dash-muted inline-flex items-center gap-1.5 text-xs hover:opacity-80">
+                <Crosshair size={13} /> Recentralizar
+              </button>
+            </Section>
+          )}
+
           <Section title="Moldura">
             <Field label="Estilo da moldura">
               <select className="dash-input" value={d.bordaEstilo} onChange={(e) => set("bordaEstilo", e.target.value as BordaEstilo)}>
@@ -327,7 +236,7 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
             </div>
           </Section>
 
-          <Section title="Fundo (aparece se não houver imagem) e verso">
+          <Section title="Fundo (se não houver imagem) e verso">
             <div className="grid grid-cols-2 gap-3">
               <ColorField label="Fundo da frente" value={d.frenteBg} onChange={(v) => set("frenteBg", v)} />
               <ColorField label="Fundo (gradiente)" value={d.frenteBg2} onChange={(v) => set("frenteBg2", v)} disabled={!d.usarGradiente} />
@@ -350,8 +259,14 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
             </div>
 
             <div className="flex flex-wrap items-start justify-center gap-5">
-              <div className="text-center">{Frente}<p className="dash-muted mt-2 text-xs">Frente</p></div>
-              <div className="text-center">{Verso}<p className="dash-muted mt-2 text-xs">Verso</p></div>
+              <div className="text-center">
+                <CardFace ref={frontRef} view={d} side="front" width={CARD_W} />
+                <p className="dash-muted mt-2 text-xs">Frente</p>
+              </div>
+              <div className="text-center">
+                <CardFace ref={backRef} view={d} side="back" width={CARD_W} />
+                <p className="dash-muted mt-2 text-xs">Verso</p>
+              </div>
             </div>
 
             <button disabled={salvando} onClick={salvar}
@@ -360,9 +275,15 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
               {editando ? "Salvar alterações" : "Salvar card"}
             </button>
 
+            <button disabled={salvando} onClick={imprimir}
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold disabled:opacity-60"
+              style={{ background: "rgba(201,162,75,0.14)", color: "#A67C2E" }}>
+              <Printer size={16} /> Prévia de impressão (A4)
+            </button>
+
             <div className="mt-4 flex items-start gap-2 rounded-xl p-3 text-xs" style={{ background: "rgba(201,162,75,0.10)", color: "#6B5F57" }}>
               <Copy size={14} style={{ color: "#A67C2E", marginTop: 1, flexShrink: 0 }} />
-              <span>No jogo da memória, cada card é impresso <strong>em par</strong> (duas cópias iguais). A diagramação em folha A4 entra na próxima etapa.</span>
+              <span>A prévia salva o card e mostra a <strong>frente e o verso</strong> prontos para imprimir em folha A4.</span>
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-2">
@@ -375,7 +296,7 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
             </div>
 
             <p className="dash-muted mt-3 flex items-start gap-1.5 text-[11px]">
-              <Info size={12} style={{ marginTop: 1, flexShrink: 0 }} /> As alterações são gravadas no banco ao clicar em salvar.
+              <Info size={12} style={{ marginTop: 1, flexShrink: 0 }} /> As alterações são gravadas no banco ao salvar ou imprimir.
             </p>
           </div>
         </div>

@@ -23,6 +23,9 @@ const estiloSchema = z.object({
   versoBg: z.string(),
   versoTextoCor: z.string(),
   acento: z.string(),
+  imgScale: z.number().min(0.2).max(5).default(1),
+  imgPosX: z.number().min(0).max(100).default(50),
+  imgPosY: z.number().min(0).max(100).default(50),
 })
 
 const salvarSchema = z.object({

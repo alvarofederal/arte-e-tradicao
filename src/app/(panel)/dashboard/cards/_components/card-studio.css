@@ -64,6 +64,29 @@
   }
 }
 
+/* ── Prévia de impressão (A4) ── */
+.print-screen { background: #e9e6df; min-height: 100vh; }
+.print-page {
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+@media print {
+  .print-toolbar { display: none !important; }
+  .print-screen { background: #fff !important; min-height: 0 !important; }
+  .print-page {
+    box-shadow: none !important;
+    width: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  @page { size: A4; margin: 14mm; }
+  html, body { background: #fff !important; }
+  /* congela o brilho/holográfico para não sair risco branco na impressão */
+  .cardstudio-shine::after,
+  .cardstudio-holo::before { display: none !important; animation: none !important; }
+}
+
 /* Inputs de cor compactos */
 .cardstudio-color {
   inline-size: 100%;
