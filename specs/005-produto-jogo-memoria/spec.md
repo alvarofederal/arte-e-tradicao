@@ -5,6 +5,8 @@
 ## Contexto
 Jogo de pares (memória) com os Santos. Pares associam o **Santo** ao seu **atributo/símbolo** (ex.: São Jorge ↔ dragão; Santa Luzia ↔ olhos; São Pedro ↔ chaves), ensinando iconografia brincando. Existe como produto físico (cartas) e, em fase futura, como jogo digital.
 
+> **As cartas físicas são produzidas no Gerador de Cards** — ver [`specs/007-gerador-de-cards/spec.md`](../007-gerador-de-cards/spec.md). O jogo da memória é o **primeiro uso** do gerador: cards no tamanho de figurinha da Copa (~5×7 cm), sempre em **pares**, impressos em **folha A4**.
+
 ## Critérios de aceite — produto físico (catálogo)
 - [ ] Cadastro do produto: coleção de pares, nº de cartas, faixa etária, preço, imagens.
 - [ ] Lista dos pares Santo↔atributo com fidelidade iconográfica revisada.

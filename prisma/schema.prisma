@@ -569,3 +569,25 @@ enum TipoEvento {
   USUARIO_LOGIN
   USUARIO_LOGOUT
 }
+
+// ===================================================
+// CARDS DOS SANTOS (estúdio de cards — spec 007)
+// ===================================================
+model CardSanto {
+  id          String  @id @default(cuid())
+  numero      String?              // número da figurinha (ex.: "036")
+  nome        String
+  subtitulo   String? @db.Text     // legado (padrão antigo)
+  dataFesta   String?              // data comemorativa DD/MM (ex.: "15/10")
+  descricao   String? @db.Text
+  imagem      String? @db.LongText // dataURL (base64) — futuro: URL do Cloudinary
+  estilo      Json                 // cores/borda/toggles (ver Design no card-studio)
+
+  criadoPorId String?              // id do usuário que criou (sem FK — desacoplado)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@index([criadoPorId])
+  @@map("cards_santos")
+}

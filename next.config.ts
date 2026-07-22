@@ -13,6 +13,13 @@ const nextConfig: NextConfig = {
   // jsPDF precisa rodar no servidor sem bundling do Next.js
   serverExternalPackages: ['jspdf', 'html2canvas'],
 
+  // Server Actions recebem a imagem do card (dataURL) — eleva o limite de corpo
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '6mb',
+    },
+  },
+
   // ✅ Headers de segurança HTTP (OWASP A05)
   async headers() {
     return [

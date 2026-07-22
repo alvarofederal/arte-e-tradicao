@@ -21,6 +21,7 @@ import {
   ScanLine,
   CreditCard,
   Zap,
+  Palette,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { TopNavbar } from "./top-navbar"
@@ -38,6 +39,7 @@ import { TopNavbar } from "./top-navbar"
 
 const lojistaNav: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/dashboard",               label: "Visão Geral",   icon: LayoutDashboard },
+  { href: "/dashboard/cards",         label: "Cards dos Santos", icon: Palette      },
   { href: "/dashboard/configuracoes", label: "Configurações", icon: Settings        },
   { href: "/dashboard/layout",        label: "Layout",        icon: Layers          },
   { href: "/dashboard/campanhas",     label: "Campanhas",     icon: Megaphone       },
@@ -53,6 +55,7 @@ const lojistaNav: { href: string; label: string; icon: LucideIcon }[] = [
 
 const adminNav: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/dashboard",               label: "Visão Geral",   icon: LayoutDashboard },
+  { href: "/dashboard/cards",         label: "Cards dos Santos", icon: Palette      },
   { href: "/dashboard/lojas",         label: "Lojas",         icon: Building2       },
   { href: "/dashboard/usuarios",      label: "Usuários",      icon: Users           },
   { href: "/dashboard/campanhas",            label: "Campanhas",  icon: Megaphone },

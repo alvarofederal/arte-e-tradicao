@@ -1,0 +1,80 @@
+/* Efeitos do card — brilho/holográfico da área do nome ("parte brilhosa"). */
+
+/* Faixa brilhosa: base de cor + reflexo de luz que percorre (foil). */
+.cardstudio-shine {
+  position: relative;
+  overflow: hidden;
+}
+.cardstudio-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.85) 47%,
+    rgba(255, 255, 255, 0.98) 50%,
+    rgba(255, 255, 255, 0.85) 53%,
+    transparent 75%
+  );
+  background-size: 250% 100%;
+  animation: cardstudio-sweep 3.6s linear infinite;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* Holográfico opcional: leve arco-íris que desliza sobre o foil. */
+.cardstudio-holo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 122, 122, 0.35),
+    rgba(255, 214, 128, 0.35),
+    rgba(150, 220, 160, 0.35),
+    rgba(140, 190, 240, 0.35),
+    rgba(220, 160, 230, 0.35)
+  );
+  background-size: 300% 100%;
+  animation: cardstudio-holo 6s linear infinite;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+@keyframes cardstudio-sweep {
+  0%   { background-position: 180% 0; }
+  100% { background-position: -80% 0; }
+}
+@keyframes cardstudio-holo {
+  0%   { background-position: 0% 0; }
+  100% { background-position: 300% 0; }
+}
+
+/* Durante a exportação (PNG), congela/oculta o reflexo para não sair um risco branco. */
+.cardstudio-capturing .cardstudio-shine::after,
+.cardstudio-capturing .cardstudio-holo::before {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardstudio-shine::after,
+  .cardstudio-holo::before {
+    animation: none;
+  }
+}
+
+/* Inputs de cor compactos */
+.cardstudio-color {
+  inline-size: 100%;
+  block-size: 38px;
+  padding: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+.dark .cardstudio-color {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
