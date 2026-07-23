@@ -28,11 +28,13 @@ Ref.: [`spec 007`](../specs/007-gerador-de-cards/spec.md)
 - [ ] 🟢 Sangria/*bleed* de impressão (margem de corte)
 - [ ] 🟢 Mover a imagem do card para o **Cloudinary** (hoje dataURL no banco)
 
-## B. Adaptar o painel (remover "Courtesyfy") 🟠
+## B. Adaptar o painel (remover "Courtesyfy") ✅ *(feito)*
 
-- [ ] 🟠 **Rebranding** do login e da sidebar (ainda aparece "Courtesyfy") → logo + cores Arte & Tradição
-- [ ] 🟡 Esconder/adaptar itens de menu do Courtesyfy (Campanhas, Chaves, Lojas, Stripe) que ainda não pertencem à Arte & Tradição
+- [x] **Remover todo o domínio Courtesyfy** (rotas, APIs, lib/stripe, modelos Prisma + drop das tabelas)
+- [x] **Rebranding** do login, sidebar e navbar → Arte & Tradição
+- [x] Menu do painel reduzido a Visão Geral + Cards; home do painel reescrito
 - [ ] 🟡 UX de **sessão expirada** — não perder o trabalho da tela (avisar / manter rascunho)
+- [ ] 🟢 Podar dependências não usadas do `package.json` (Stripe, Twilio, etc.)
 
 ## C. Áreas da plataforma (grandes releases)
 
