@@ -1,107 +1,69 @@
-# Courtesyfy — Backlog de Funcionalidades
+# Arte & Tradição — Backlog
 
-## Como usar este arquivo
-
-Adicione itens aqui quando surgir nova ideia ou necessidade.
-Mova para `features.md` quando iniciar o desenvolvimento.
-Prioridades: 🔴 Crítico | 🟠 Alta | 🟡 Média | 🟢 Baixa
-
----
-
-## Em Andamento Agora
-
-→ ver `development/features.md`
+> Lista viva de tarefas. A fonte de verdade de cada feature é a spec em [`specs/`](../specs); aqui é a visão priorizada do que fazer.
+>
+> Prioridade: 🔴 Crítico · 🟠 Alta · 🟡 Média · 🟢 Baixa · Status: `[x]` feito · `[~]` em andamento · `[ ]` a fazer
+>
+> Backlog do projeto base preservado em [`docs/referencia/backlog-courtesyfy.md`](../docs/referencia/backlog-courtesyfy.md).
 
 ---
 
-## Próximos a Iniciar (P1 — Segurança)
+## ✅ Concluído
 
-### 🔴 Rate limit no endpoint de login
-**Descrição:** `POST /api/auth/login-and-redirect` sem proteção contra brute-force.
-Adicionar `checkRateLimit` com limite de 10 tentativas/15 min por IP.
-**Arquivo:** `src/app/api/auth/login-and-redirect/route.ts`
-
-### 🔴 Remover log de código OTP em texto puro
-**Descrição:** `resend-verification/route.ts:89` loga o código de verificação nos logs do Vercel.
-**Arquivo:** `src/app/api/resend-verification/route.ts`
-
-### 🟠 Headers de segurança HTTP
-**Descrição:** Adicionar CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy no `next.config.ts`.
-
-### 🟠 Upstash Redis em produção
-**Descrição:** Configurar `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN` na Vercel para
-rate limit distribuído funcionar entre instâncias serverless.
-
-### 🟠 Limpar console.log de debug em produção
-**Descrição:** `criar-campanha.ts` tem 12 logs com dados de sessão e formulário visíveis nos logs da Vercel.
+- [x] Casca da plataforma + fundação spec-driven (specs, ADRs, comandos) — [`spec 000`](../specs/000-plataforma-base/spec.md)
+- [x] Landing de divulgação em cores pastéis (esboço) — [`spec 001`](../specs/001-site-divulgacao/spec.md)
+- [x] Login por e-mail/senha funcionando + usuário admin (seed via `.env`)
+- [x] **Estúdio de Cards** — lista + cadastro/alteração, persistência (`CardSanto`), padrão figurinha (moldura, número, faixa com nome + igrejinha + data) — [`spec 007`](../specs/007-gerador-de-cards/spec.md)
+- [x] Enquadramento da imagem (zoom + posição) e **prévia de impressão A4** (frente + verso)
 
 ---
 
-## Backlog Geral
+## A. Cards / Impressão 🟠 *(frente ativa — continuação direta)*
+Ref.: [`spec 007`](../specs/007-gerador-de-cards/spec.md)
 
-### UX/UI
-- 🟡 Onboarding interativo com tour guiado para novos lojistas
-- 🟡 Melhorar responsividade mobile do dashboard
-- 🟡 Notificação ao lojista quando chave é resgatada (email/push)
-- 🟡 Email de boas-vindas pós-onboarding com links rápidos
-- 🟢 Animações de transição entre páginas
+- [ ] 🟠 **Grade A4 com pares** — vários cards por folha, cada Santo em **2 cópias** (jogo da memória), com marcas de corte *(próximo passo sugerido)*
+- [ ] 🟡 Impressão **frente-e-verso alinhada** (duplex)
+- [ ] 🟡 Trocar a **igrejinha genérica** pelo ícone oficial da Arte & Tradição *(depende do Álvaro enviar o SVG/PNG)*
+- [ ] 🟡 **Arrastar a imagem** no preview para reposicionar (hoje só sliders)
+- [ ] 🟢 Sangria/*bleed* de impressão (margem de corte)
+- [ ] 🟢 Mover a imagem do card para o **Cloudinary** (hoje dataURL no banco)
 
-### Campanhas e Chaves
-- 🟡 Cancelamento em lote de chaves pelo lojista
-- 🟡 Duplicar campanha (clonar configurações)
-- 🟡 Filtros avançados: por status, campanha, período, lote
-- 🟡 Paginação real cursor-based (resgates, chaves, clientes)
-- 🟡 Múltiplos layouts por campanha (A/B)
-- 🟡 Importação de lotes via CSV
-- 🟢 QR Code customizado com logo da loja
+## B. Adaptar o painel (remover "Courtesyfy") 🟠
 
-### Relatórios e Métricas
-- 🟡 Gráficos: taxa de ativação, conversão, resgates por período (Recharts já instalado)
-- 🟡 Filtros por período nos relatórios
-- 🟡 Export CSV dos relatórios
-- 🟡 Gráfico de resgates por hora do dia
+- [ ] 🟠 **Rebranding** do login e da sidebar (ainda aparece "Courtesyfy") → logo + cores Arte & Tradição
+- [ ] 🟡 Esconder/adaptar itens de menu do Courtesyfy (Campanhas, Chaves, Lojas, Stripe) que ainda não pertencem à Arte & Tradição
+- [ ] 🟡 UX de **sessão expirada** — não perder o trabalho da tela (avisar / manter rascunho)
 
-### Clientes
-- 🟡 Re-envio de email com código para o cliente
-- 🟡 Área do cliente com histórico de chaves (portal público)
-- 🟢 Integração WhatsApp Business API (envio de código por mensagem)
+## C. Áreas da plataforma (grandes releases)
 
-### Faturamento
-- 🟡 Portal Stripe do lojista — upgrade/downgrade/cancelar assinatura sem sair do dashboard
+- [ ] 🟠 **Coleções + Álbum de figurinhas** — agrupar cards em Coleção, gerar códigos/QR, álbum digital (reaproveita motor de Chaves) — [`spec 006`](../specs/006-produto-album-figurinhas/spec.md)
+- [ ] 🟠 **Área administrativa** — produtos, estoque, pedidos, métricas — [`spec 003`](../specs/003-area-administrativa/spec.md)
+- [ ] 🟡 **Site de divulgação** — conteúdo, páginas dos Santos, SEO — [`spec 001`](../specs/001-site-divulgacao/spec.md)
+- [ ] 🟡 **E-commerce / Loja** — catálogo real, carrinho, checkout, conta — [`spec 002`](../specs/002-ecommerce/spec.md)
+- [ ] 🟢 **Jogo da memória digital** (jogar online) — [`spec 005`](../specs/005-produto-jogo-memoria/spec.md)
 
-### Administrativo
-- 🟡 Logs de auditoria de segurança (falhas de auth, API key inválida)
-- 🟡 Sistema de suporte/tickets integrado
-- 🟢 Métricas de uso por plano (para calibrar pricing)
+## D. Decisões em aberto (ADRs)
 
-### Performance
-- 🟡 Cache ISR em `/c/[codigo]` (`revalidate: 60`)
-- 🟡 Paginação cursor-based nas listagens longas
-- 🟢 Otimização de queries N+1 monitoradas
+- [ ] 🟡 **Auth Google + JWT** — hoje é sessão de banco por credenciais — [`ADR-0003`](../docs/adr/0003-autenticacao-google-jwt.md)
+- [ ] 🟡 **Pagamento** — Stripe atual vs. Asaas/PIX no e-commerce — [`ADR-0004`](../docs/adr/0004-pagamento-stripe-vs-asaas.md)
 
-### Segurança
-- 🟠 Validação de env vars no startup (Zod em `src/lib/env.ts`)
-- 🟠 LGPD — exportação e exclusão de dados de clientes
-- 🟡 2FA para lojistas (TOTP — `otplib`)
-- 🟡 Padronizar respostas de verify/resend (evitar enumeração de e-mail)
-- 🟡 Avaliar remoção de `allowDangerousEmailAccountLinking`
+## E. Qualidade / dívidas técnicas
 
-### Documentação e Qualidade
-- 🟡 Documentação OpenAPI da API pública `/api/chaves/validar`
-- 🟡 Testes E2E com Playwright (fluxo ativação + login + criar campanha)
+- [ ] 🟡 Adaptar o **schema** (`Loja/Campanha/Chave` → domínio Arte & Tradição) conforme cada spec avança
+- [ ] 🟡 Testes obrigatórios (geração de código das figurinhas, regras de coleção, billing) — Constituição §9
+- [ ] 🟢 Limpar contexto legado do base (`context/`, `knowledge/`, `planning/*` ainda descrevem o Courtesyfy)
+- [ ] 🟢 Validação tipada de env vars no startup (Zod)
 
 ---
 
-## Ideias Futuras (não priorizadas)
+## Ideias futuras (não priorizadas)
 
-- White-label por loja (domínio customizado: cortesias.minhaloja.com.br)
-- Multi-unidade e franquias (uma conta, várias lojas)
-- API de integração com ecommerce (WooCommerce, Shopify)
-- Sorteio automatizado no fechamento da campanha
-- Programa de indicação entre lojistas
-- App mobile para operadores (validação offline — PWA ou React Native)
-- Relatórios avançados com BI embutido
+- Troca de figurinhas repetidas entre colecionadores
+- Raridades (comum / prata / dourada / brilhante) nas figurinhas
+- Ranking do jogo da memória online
+- Compra em volume com nota fiscal (paróquias — persona Padre Marcos)
+- App/PWA para o álbum
 
 ---
 
-*Atualizado em: 2026-05-20*
+*Registrado em: 2026-07-22*
