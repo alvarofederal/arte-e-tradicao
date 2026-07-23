@@ -51,8 +51,8 @@ Ref.: [`spec 007`](../specs/007-gerador-de-cards/spec.md)
 
 ## E. Qualidade / dívidas técnicas
 
-- [ ] 🟡 Adaptar o **schema** (`Loja/Campanha/Chave` → domínio Arte & Tradição) conforme cada spec avança
-- [ ] 🟡 Testes obrigatórios (geração de código das figurinhas, regras de coleção, billing) — Constituição §9
+- [x] ~~Remover o schema do Courtesyfy~~ (feito). Falta **modelar o novo domínio** (Coleção, Produto, Pedido) conforme cada spec avança
+- [ ] 🟠 **Testes** — o projeto está hoje com **zero testes** (os do Courtesyfy foram removidos). Criar os obrigatórios: geração de código das figurinhas, regras de coleção — Constituição §9
 - [ ] 🟢 Limpar contexto legado do base (`context/`, `knowledge/`, `planning/*` ainda descrevem o Courtesyfy)
 - [ ] 🟢 Validação tipada de env vars no startup (Zod)
 
