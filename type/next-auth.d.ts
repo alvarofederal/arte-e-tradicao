@@ -1,31 +1,14 @@
-import {DefaultSession} from "next-auth"
+// A augmentação de Session/JWT vive em src/lib/auth.ts.
+// Este arquivo mantém apenas o mínimo para o NextAuth.
+import type { DefaultSession } from "next-auth"
 
 declare module "next-auth" {
-    interface Session {
-        user: User & DefaultSession["user"]
-    }
-
-    interface User {
-        id: string
-        name: string | null
-        urlNameProfessional: string | null
-        email: string | null
-        emailVerified: null | string | boolean
-        image: string | null
-        stripeCustomerId: string | null
-        times: string[]
-        address: string[]
-        phone: string | null
-        status: boolean
-        role: string | null
-        typeProfile: string | null
-        createdAt: string | null
-        updatedAt: string | null
-    }
+  interface Session {
+    user: {
+      id: string
+      role: string
+    } & DefaultSession["user"]
+  }
 }
 
-declare module "next-auth/jwt" {
-    interface JWT {
-        role?: string
-    }
-}
+export {}

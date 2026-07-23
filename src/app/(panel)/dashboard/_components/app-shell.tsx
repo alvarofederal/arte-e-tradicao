@@ -4,25 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
-import {
-  LayoutDashboard,
-  Megaphone,
-  Key,
-  ShoppingBag,
-  BarChart3,
-  Settings,
-  Users,
-  Building2,
-  X,
-  LogOut,
-  Layers,
-  Printer,
-  MonitorSmartphone,
-  ScanLine,
-  CreditCard,
-  Zap,
-  Palette,
-} from "lucide-react"
+import { LayoutDashboard, Palette, X, LogOut, Cross } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { TopNavbar } from "./top-navbar"
 
@@ -37,34 +19,13 @@ import { TopNavbar } from "./top-navbar"
    7 → Relatórios
    ──────────────────────────────────────────────────────────────── */
 
-const lojistaNav: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/dashboard",               label: "Visão Geral",   icon: LayoutDashboard },
-  { href: "/dashboard/cards",         label: "Cards dos Santos", icon: Palette      },
-  { href: "/dashboard/configuracoes", label: "Configurações", icon: Settings        },
-  { href: "/dashboard/layout",        label: "Layout",        icon: Layers          },
-  { href: "/dashboard/campanhas",     label: "Campanhas",     icon: Megaphone       },
-  { href: "/dashboard/chaves",        label: "Chaves",        icon: Key             },
-  { href: "/dashboard/resgates",      label: "Resgates",      icon: ShoppingBag        },
-  { href: "/dashboard/clientes",      label: "Clientes",      icon: Users              },
-  { href: "/dashboard/validar",       label: "Validar",       icon: ScanLine           },
-  { href: "/dashboard/totem",         label: "Totem",         icon: MonitorSmartphone  },
-  { href: "/dashboard/impressao",     label: "Impressão",     icon: Printer            },
-  { href: "/dashboard/relatorios",    label: "Relatórios",    icon: BarChart3       },
-  { href: "/dashboard/planos",        label: "Meu Plano",     icon: Zap             },
+const nav: { href: string; label: string; icon: LucideIcon }[] = [
+  { href: "/dashboard",       label: "Visão Geral",      icon: LayoutDashboard },
+  { href: "/dashboard/cards", label: "Cards dos Santos", icon: Palette         },
 ]
 
-const adminNav: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/dashboard",               label: "Visão Geral",   icon: LayoutDashboard },
-  { href: "/dashboard/cards",         label: "Cards dos Santos", icon: Palette      },
-  { href: "/dashboard/lojas",         label: "Lojas",         icon: Building2       },
-  { href: "/dashboard/usuarios",      label: "Usuários",      icon: Users           },
-  { href: "/dashboard/campanhas",            label: "Campanhas",  icon: Megaphone },
-  { href: "/dashboard/chaves",               label: "Chaves",     icon: Key       },
-  { href: "/dashboard/admin/impressoes",     label: "Impressões",    icon: Printer  },
-  { href: "/dashboard/relatorios",           label: "Relatórios",    icon: BarChart3 },
-  { href: "/dashboard/admin/stripe",        label: "Stripe",        icon: CreditCard },
-  { href: "/dashboard/admin/configuracoes", label: "Configurações", icon: Settings   },
-]
+const lojistaNav = nav
+const adminNav = nav
 
 /* ─── Sidebar — sempre dark (identidade de marca) ──────────────── */
 
@@ -82,10 +43,12 @@ function SidebarContent({ navItems, initial, displayName, isAdmin, isActive, onC
     <>
       {/* Logo */}
       <div className="px-5 py-5 flex items-center justify-between border-b border-gray-200 dark:border-white/[0.07]">
-        <Link href="/dashboard" onClick={onClose} className="logo-shine flex items-center">
-          <span className="text-gray-900 dark:text-white font-extrabold text-lg tracking-tight select-none"
-            style={{ fontFamily: "var(--font-open-sans), 'Open Sans', sans-serif", letterSpacing: "-0.02em" }}>
-            Courtesy<span className="logo-fy-pulse" style={{ color: "#10b981" }}>fy</span>
+        <Link href="/dashboard" onClick={onClose} className="flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: "rgba(201,162,75,0.16)", color: "#A67C2E" }}>
+            <Cross size={17} strokeWidth={2.2} />
+          </span>
+          <span className="select-none font-bold leading-tight tracking-tight text-gray-900 dark:text-white" style={{ letterSpacing: "-0.01em" }}>
+            Arte&nbsp;&amp;&nbsp;Tradição
           </span>
         </Link>
         {onClose && (

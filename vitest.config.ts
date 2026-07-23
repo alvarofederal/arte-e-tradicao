@@ -5,15 +5,8 @@ export default defineConfig({
   test: {
     globals:     true,
     environment: "node",
-    setupFiles:  ["./tests/setup.ts"],
-    testTimeout: 30_000,       // 30s para consultas DB reais
+    testTimeout: 30_000,
     hookTimeout: 30_000,
-    // Testes de integração compartilham banco real: sem paralelismo entre arquivos
-    // para evitar que o afterAll de um arquivo limpe dados de outro worker
-    fileParallelism: false,
-    sequence: {
-      shuffle: false,          // manter ordem determinística nos testes de fluxo
-    },
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],

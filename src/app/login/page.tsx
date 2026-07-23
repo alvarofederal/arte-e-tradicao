@@ -32,7 +32,7 @@ export default async function LoginPage() {
           top: "-200px",
           left: "50%",
           transform: "translateX(-50%)",
-          background: "radial-gradient(circle, rgba(16,185,129,0.12), transparent 65%)",
+          background: "radial-gradient(circle, rgba(201,162,75,0.16), transparent 65%)",
           borderRadius: "50%",
         }}
       />
@@ -51,14 +51,15 @@ export default async function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/">
             <span
-              className="logo-shine font-bold tracking-tight select-none"
+              className="font-bold tracking-tight select-none"
               style={{
                 fontFamily: "var(--font-open-sans), 'Open Sans', sans-serif",
-                fontSize: "28px",
+                fontSize: "26px",
+                color: "#E4CB90",
+                letterSpacing: "0.01em",
               }}
             >
-              <span style={{ color: "#ffffff" }}>Courtesy</span>
-              <span className="logo-fy-pulse" style={{ color: "#10b981" }}>fy</span>
+              Arte&nbsp;<span style={{ color: "#C9A24B" }}>&amp;</span>&nbsp;Tradição
             </span>
           </Link>
           <p className="text-sm mt-3" style={{ color: "rgba(255,255,255,0.40)" }}>
@@ -70,7 +71,7 @@ export default async function LoginPage() {
 
         <p className="text-center text-xs mt-6" style={{ color: "rgba(255,255,255,0.20)" }}>
           Ainda não tem conta?{" "}
-          <Link href="/register" className="font-semibold transition-colors hover:text-white" style={{ color: "#10b981" }}>
+          <Link href="/register" className="font-semibold transition-colors hover:text-white" style={{ color: "#C9A24B" }}>
             Criar conta
           </Link>
         </p>

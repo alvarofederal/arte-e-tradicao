@@ -23,7 +23,6 @@ export function middleware(request: NextRequest) {
     "/forgot-password",
     "/reset-password",
     "/auth",
-    "/c/",          // landing page pública das chaves
   ]
 
   const isPublicRoute =
