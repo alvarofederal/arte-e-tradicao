@@ -103,7 +103,15 @@ export const CardFace = forwardRef<HTMLDivElement, Props>(function CardFace(
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 2, minWidth: s(20) }}>
             <Church size={s(13)} style={{ color: v.subtituloCor }} />
-            {v.dataFesta && <span style={{ fontSize: s(8), color: v.subtituloCor, marginTop: 1, fontWeight: 700 }}>{v.dataFesta}</span>}
+            {v.dataFesta && (
+              <span style={{
+                // data com ano (ex.: 15/10/1582) é maior — reduz a fonte para caber
+                fontSize: s(v.dataFesta.length > 6 ? 6.2 : 8),
+                color: v.subtituloCor, marginTop: 1, fontWeight: 700, whiteSpace: "nowrap",
+              }}>
+                {v.dataFesta}
+              </span>
+            )}
           </div>
         </div>
       </div>

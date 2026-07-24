@@ -30,8 +30,10 @@ const estiloSchema = z.object({
 
 const salvarSchema = z.object({
   id: z.string().nullish(),
+  // editável; se vier vazio na criação, o servidor atribui o próximo da sequência
+  numero: z.number().int().min(1).max(99999).nullish(),
   nome: z.string().trim().min(1, "Informe o nome do Santo").max(120),
-  dataFesta: z.string().trim().max(12).default(""),
+  dataFesta: z.string().trim().max(20).default(""),
   descricao: z.string().max(4000).default(""),
   imagem: z.string().max(8_000_000).nullable().default(null), // dataURL
   estilo: estiloSchema,
@@ -65,9 +67,10 @@ function toRegistro(c: {
   }
 }
 
+/** Listagem em ordem decrescente de número (o mais recente primeiro). */
 export async function listarCards(): Promise<CardRegistro[]> {
   await exigirUsuario()
-  const cards = await db.cardSanto.findMany({ orderBy: { atualizadoEm: "desc" } })
+  const cards = await db.cardSanto.findMany({ orderBy: { numero: "desc" } })
   return cards.map(toRegistro)
 }
 
@@ -106,20 +109,24 @@ export async function salvarCard(
     estilo: v.estilo,
   }
 
+  // Número: usa o informado; se for criação sem número, pega o próximo da sequência.
+  let numero = v.numero ?? null
+  if (!v.id && numero == null) {
+    const maior = await db.cardSanto.aggregate({ _max: { numero: true } })
+    numero = (maior._max.numero ?? 0) + 1
+  }
+
   try {
-    let card
-    if (v.id) {
-      // Alteração: o número é permanente, nunca muda.
-      card = await db.cardSanto.update({ where: { id: v.id }, data })
-    } else {
-      // Criação: número GLOBAL sequencial (maior + 1), nunca reaproveitado.
-      const maior = await db.cardSanto.aggregate({ _max: { numero: true } })
-      const numero = (maior._max.numero ?? 0) + 1
-      card = await db.cardSanto.create({ data: { ...data, numero, criadoPorId: user.id } })
-    }
+    const card = v.id
+      ? await db.cardSanto.update({ where: { id: v.id }, data: { ...data, numero } })
+      : await db.cardSanto.create({ data: { ...data, numero, criadoPorId: user.id } })
     revalidatePath("/dashboard/cards")
     return { ok: true, card: toRegistro(card) }
   } catch (e) {
+    // número duplicado (constraint única)
+    if (typeof e === "object" && e !== null && (e as { code?: string }).code === "P2002") {
+      return { ok: false, error: `Já existe um card com o número ${numero}. Escolha outro.` }
+    }
     console.error("Erro ao salvar card:", e)
     return { ok: false, error: "Não foi possível salvar o card." }
   }

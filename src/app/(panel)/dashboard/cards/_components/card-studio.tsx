@@ -90,7 +90,7 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
 
   function payload() {
     return {
-      id: cardId, nome: d.nome, dataFesta: d.dataFesta,
+      id: cardId, numero: d.numero, nome: d.nome, dataFesta: d.dataFesta,
       descricao: d.descricao, imagem: d.imagem, estilo: extrairEstilo(d),
     }
   }
@@ -163,40 +163,35 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
         <div className="space-y-5">
           <Section title="Conteúdo">
             <div className="grid grid-cols-[104px_1fr] gap-3">
-              <Field label="Número (automático)">
-                <div className="dash-input flex items-center justify-center" style={{ fontFamily: SERIF_UI, fontWeight: 700, letterSpacing: "0.04em" }}
-                  title="Número global, sequencial e permanente — atribuído pelo sistema">
-                  {d.numero != null ? formatarNumero(d.numero) : "—"}
-                </div>
+              <Field label="Número">
+                <input
+                  className="dash-input text-center"
+                  inputMode="numeric"
+                  style={{ fontFamily: SERIF_UI, fontWeight: 700, letterSpacing: "0.04em" }}
+                  value={d.numero ?? ""}
+                  onChange={(e) => {
+                    const so = e.target.value.replace(/\D/g, "")
+                    set("numero", so === "" ? null : parseInt(so, 10))
+                  }}
+                  placeholder="auto"
+                  title="Número global do catálogo — único por card"
+                />
               </Field>
               <Field label="Nome do Santo">
                 <input className="dash-input" value={d.nome} onChange={(e) => set("nome", e.target.value)} placeholder="Ex.: Santa Teresa d'Ávila" />
               </Field>
             </div>
-            {d.numero == null && (
-              <p className="dash-muted -mt-1 text-xs">O número é atribuído automaticamente ao salvar, na sequência do catálogo.</p>
-            )}
-            <Field label="Data comemorativa (dia/mês)">
-              <input className="dash-input" value={d.dataFesta} onChange={(e) => set("dataFesta", e.target.value)} placeholder="Ex.: 15/10" />
+            <p className="dash-muted -mt-1 text-xs">
+              {d.numero == null
+                ? "Em branco, o próximo número da sequência é atribuído ao salvar."
+                : `Sai no card como ${formatarNumero(d.numero)}. O número é único — dois cards não podem repetir.`}
+            </p>
+            <Field label="Data comemorativa (dia/mês/ano)">
+              <input className="dash-input" value={d.dataFesta} onChange={(e) => set("dataFesta", e.target.value)} placeholder="Ex.: 15/10/1582" />
             </Field>
             <Field label="Descrição (verso)">
               <textarea className="dash-input" rows={4} value={d.descricao} onChange={(e) => set("descricao", e.target.value)} placeholder="Uma descrição bonita do Santo..." style={{ resize: "vertical" }} />
             </Field>
-          </Section>
-
-          <Section title="Imagem do Santo">
-            <div className="flex items-center gap-2">
-              <label className="dash-btn-primary inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm">
-                <Upload size={15} /> Enviar imagem
-                <input type="file" accept="image/*" className="hidden" onChange={onUpload} />
-              </label>
-              {d.imagem && (
-                <button onClick={() => set("imagem", null)} className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-sm" style={{ color: "#dc2626", background: "rgba(220,38,38,0.08)" }}>
-                  <Trash2 size={15} /> Remover
-                </button>
-              )}
-            </div>
-            <p className="dash-muted mt-2 text-xs">JPG ou PNG, de preferência vertical. É otimizada automaticamente ao enviar.</p>
           </Section>
 
           {d.imagem && (
@@ -266,6 +261,24 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
             <div className="mb-3 flex items-center justify-between">
               <span className="dash-label">Pré-visualização</span>
               <span className="dash-muted text-xs">4,9 × 6,5 cm · figurinha</span>
+            </div>
+
+            {/* Upload logo acima da prévia — envia e já vê o resultado */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2">
+                <label className="dash-btn-primary inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold">
+                  <Upload size={15} /> {d.imagem ? "Trocar imagem" : "Enviar imagem"}
+                  <input type="file" accept="image/*" className="hidden" onChange={onUpload} />
+                </label>
+                {d.imagem && (
+                  <button onClick={() => set("imagem", null)} title="Remover imagem"
+                    className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-sm"
+                    style={{ color: "#dc2626", background: "rgba(220,38,38,0.08)" }}>
+                    <Trash2 size={15} />
+                  </button>
+                )}
+              </div>
+              <p className="dash-muted mt-1.5 text-xs">JPG ou PNG, de preferência vertical. É otimizada automaticamente.</p>
             </div>
 
             <div className="flex flex-wrap items-start justify-center gap-5">

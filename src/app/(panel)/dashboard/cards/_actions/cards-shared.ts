@@ -42,9 +42,10 @@ export function cardToView(c: CardRegistro): CardView {
   }
 }
 
-/** O número é global, sequencial e permanente — atribuído pelo servidor, nunca digitado. */
+/** O número é global e único. Em branco na criação = próximo da sequência. */
 export interface SalvarCardInput {
   id?: string | null
+  numero: number | null
   nome: string
   dataFesta: string
   descricao: string
