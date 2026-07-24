@@ -64,6 +64,13 @@
   }
 }
 
+/* Guia do corte na tela. Na impressão some: valem as marcas nas margens,
+   assim nada é impresso em cima do card. */
+.folha-slot {
+  outline: 0.2mm dashed rgba(0, 0, 0, 0.28);
+  outline-offset: 0;
+}
+
 /* ── Prévia de impressão (A4) ── */
 .print-screen { background: #e9e6df; min-height: 100vh; }
 .print-page {
@@ -85,6 +92,15 @@
   /* cada folha do gabarito ocupa uma página */
   .folha-a4 { break-after: page; page-break-after: always; box-shadow: none !important; margin: 0 !important; }
   .folha-a4:last-of-type { break-after: auto; page-break-after: auto; }
+  /* o tracejado é só guia de tela — no papel valem as marcas de corte */
+  .folha-slot { outline: none !important; }
+  /* ESSENCIAL: sem isto o navegador descarta as cores de fundo (molduras,
+     faixas e as próprias marcas) e a folha sai praticamente em branco. */
+  .folha-a4, .folha-a4 *,
+  .print-page, .print-page * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
   html, body { background: #fff !important; }
   /* congela o brilho/holográfico para não sair risco branco na impressão */
   .cardstudio-shine::after,
