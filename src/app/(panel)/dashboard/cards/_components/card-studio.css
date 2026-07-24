@@ -89,8 +89,27 @@
     margin: 0 !important;
     padding: 14mm !important;
   }
-  /* cada folha do gabarito ocupa uma página */
-  .folha-a4 { break-after: page; page-break-after: always; box-shadow: none !important; margin: 0 !important; }
+  /* O layout de TELA (que centraliza e espaça as folhas) não pode vazar para o
+     papel: qualquer padding/gap desloca a folha e ela deixa de caber na página,
+     partindo as linhas de cards entre duas páginas. */
+  .print-screen, .folhas-wrap, .folha-item {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+  }
+  /* cada folha do gabarito ocupa exatamente uma página.
+     0,5 mm a menos que os 297 mm da A4: evita que arredondamento de
+     sub-pixel estoure a página e gere folha em branco no meio. */
+  .folha-a4 {
+    height: 296.5mm !important;
+    break-after: page;
+    page-break-after: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
   .folha-a4:last-of-type { break-after: auto; page-break-after: auto; }
   /* o tracejado é só guia de tela — no papel valem as marcas de corte */
   .folha-slot { outline: none !important; }

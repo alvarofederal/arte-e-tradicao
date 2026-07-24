@@ -52,11 +52,23 @@ function MarcasDeCorte() {
           <div style={{ position: "absolute", left: `${x}mm`, top: `${FIM_GRADE + 2}mm`, width: TRACO, height: `${TICK_V}mm`, background: COR_TRACO }} />
         </div>
       ))}
-      {/* horizontais: nas margens esquerda e direita, alinhadas às linhas */}
+      {/* horizontais: nas margens laterais e TAMBÉM nos vãos entre as colunas.
+          A margem lateral é de só 4 mm — perto demais da borda, onde muitas
+          impressoras não imprimem. Os vãos garantem a referência da linha. */}
       {bordasY().map((y, i) => (
         <div key={`hy${i}`}>
           <div style={{ position: "absolute", top: `${y}mm`, left: `${MARGEM_LADO - TICK_H - 0.5}mm`, height: TRACO, width: `${TICK_H}mm`, background: COR_TRACO }} />
           <div style={{ position: "absolute", top: `${y}mm`, left: `${210 - MARGEM_LADO + 0.5}mm`, height: TRACO, width: `${TICK_H}mm`, background: COR_TRACO }} />
+          {Array.from({ length: COLUNAS - 1 }).map((_, g) => (
+            <div key={`g${g}`} style={{
+              position: "absolute",
+              top: `${y}mm`,
+              left: `${MARGEM_LADO + (g + 1) * CARD_MM.w + g * GAP_MM}mm`,
+              height: TRACO,
+              width: `${GAP_MM}mm`,
+              background: COR_TRACO,
+            }} />
+          ))}
         </div>
       ))}
     </div>
