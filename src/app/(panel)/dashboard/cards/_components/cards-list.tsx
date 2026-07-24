@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { toast } from "sonner"
-import { Plus, Pencil, Trash2, Sparkles, Palette, Printer, Check, Eraser } from "lucide-react"
+import { Plus, Pencil, Trash2, Sparkles, Palette, Printer, Check, Eraser, Minus } from "lucide-react"
 import type { CardRegistro } from "../_actions/cards-shared"
 import { cardToView, formatarNumero } from "../_actions/cards-shared"
 import { excluirCard } from "../_actions/cards-actions"
@@ -16,6 +16,11 @@ export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
 
   function alternarSel(id: string) {
     setSel((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]))
+  }
+
+  const todosSelecionados = cards.length > 0 && sel.length === cards.length
+  function alternarTodos() {
+    setSel(todosSelecionados ? [] : cards.map((c) => c.id))
   }
 
   async function excluir(card: CardRegistro) {
@@ -48,22 +53,39 @@ export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
         </Link>
       </div>
 
-      {/* Barra de impressão em folha (colecionável) */}
-      {sel.length > 0 && (
+      {/* Barra de seleção / impressão em folha (colecionável) */}
+      {cards.length > 0 && (
         <div className="dash-card mb-5 flex flex-wrap items-center justify-between gap-3 p-4">
-          <span className="dash-subtitle text-sm">
-            <strong>{sel.length}</strong> card{sel.length > 1 ? "s" : ""} selecionado{sel.length > 1 ? "s" : ""} ·{" "}
-            {Math.ceil(sel.length / 12)} folha{Math.ceil(sel.length / 12) > 1 ? "s" : ""} A4
-          </span>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setSel([])} className="dash-muted inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs hover:opacity-80">
-              <Eraser size={14} /> Limpar
-            </button>
-            <Link href={`/print/folha?modo=colecionavel&ids=${sel.join(",")}`}
-              className="dash-btn-primary inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold">
-              <Printer size={16} /> Imprimir folha
-            </Link>
-          </div>
+          <button onClick={alternarTodos} className="flex items-center gap-2.5 text-left"
+            title={todosSelecionados ? "Desmarcar todos" : "Selecionar todos"}>
+            <span className="grid h-6 w-6 place-items-center rounded-md border transition-colors"
+              style={sel.length > 0
+                ? { background: "#C9A24B", borderColor: "#C9A24B", color: "#fff" }
+                : { background: "transparent", borderColor: "rgba(128,128,128,0.5)", color: "transparent" }}>
+              {todosSelecionados ? <Check size={14} strokeWidth={3} /> : <Minus size={14} strokeWidth={3} />}
+            </span>
+            <span className="dash-subtitle text-sm">
+              {todosSelecionados ? "Desmarcar todos" : "Selecionar todos"}
+              {sel.length > 0 && (
+                <>
+                  {" · "}<strong>{sel.length}</strong> de {cards.length}
+                  {" · "}{Math.ceil(sel.length / 12)} folha{Math.ceil(sel.length / 12) > 1 ? "s" : ""} A4
+                </>
+              )}
+            </span>
+          </button>
+
+          {sel.length > 0 && (
+            <div className="flex items-center gap-2">
+              <button onClick={() => setSel([])} className="dash-muted inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs hover:opacity-80">
+                <Eraser size={14} /> Limpar
+              </button>
+              <Link href={`/print/folha?modo=colecionavel&ids=${sel.join(",")}`}
+                className="dash-btn-primary inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold">
+                <Printer size={16} /> Imprimir folha
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
