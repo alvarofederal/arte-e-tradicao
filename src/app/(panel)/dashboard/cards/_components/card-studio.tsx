@@ -114,7 +114,8 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
     try {
       const res = await salvarCard(payload())
       if (!res.ok) { toast.error(res.error); return }
-      router.push(`/print/card/${res.card.id}`)
+      // Folha de produção: frente e verso em páginas separadas e espelhadas (duplex).
+      router.push(`/print/folha?modo=colecionavel&ids=${res.card.id}`)
     } catch { toast.error("Erro ao abrir a prévia.") }
     finally { setSalvando(false) }
   }

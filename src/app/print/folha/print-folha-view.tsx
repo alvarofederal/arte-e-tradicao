@@ -50,8 +50,8 @@ export function PrintFolhaView({ cards, modo }: { cards: CardRegistro[]; modo: M
         </Link>
         <span style={{ fontSize: 13, opacity: 0.85, textAlign: "center" }}>
           {memoria
-            ? `Jogo da memória · ${cards.length} Santos · ${cards.length} pares · ${totalCards} cards`
-            : `Cards colecionáveis · ${totalCards} cards`}
+            ? `Jogo da memória · ${cards.length} Santo${cards.length > 1 ? "s" : ""} · ${cards.length} par${cards.length > 1 ? "es" : ""} · ${totalCards} cards`
+            : `Cards colecionáveis · ${totalCards} card${totalCards > 1 ? "s" : ""}`}
           {" · "}{folhasFrente.length} folha{folhasFrente.length > 1 ? "s" : ""} (frente + verso)
         </span>
         <button onClick={() => window.print()} style={{
