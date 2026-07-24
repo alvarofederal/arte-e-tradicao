@@ -48,3 +48,7 @@ next-env.d.ts
 backups/
 *.sql
 .claude/worktrees/
+
+# imagens de origem dos cards (ficam no banco, não no git)
+/imagens-santos/*
+!/imagens-santos/LEIA-ME.md
