@@ -16,7 +16,7 @@ Ferramenta visual onde o Álvaro monta os **cards dos Santos**: sobe a imagem, e
 3. **Tamanho real: 49 × 65 mm** (figurinha da Copa). Confirmado com foto de referência.
 4. **Numeração:** **global, sequencial e permanente**. Atribuída pelo servidor (maior + 1), **nunca digitada** e **nunca alterada**. Motivo do Álvaro: o mesmo Santo precisa ter sempre o mesmo número para trocas entre colecionadores ("qual card sumiu?"). Card excluído **deixa buraco** — não renumera.
 5. **Número fica na FRENTE** (como nas figurinhas de referência). *O pedido anterior de colocá-lo no verso foi retificado pelo Álvaro.*
-6. **Gabarito A4: 4 colunas × 3 linhas = 12 cards por folha**, com ~2 mm entre eles e linha tracejada de corte. 4 folhas = 48 cards.
+6. **Gabarito A4: 4 colunas × 4 linhas = 16 cards por folha**, com 2 mm entre eles e marcas de corte nas margens.
 7. **Frente e verso intercalados e espelhados** para impressão duplex (o verso cai atrás da frente certa).
 
 ## Requisitos do Álvaro (capturados literalmente)

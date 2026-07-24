@@ -58,7 +58,7 @@ export const CardFace = forwardRef<HTMLDivElement, Props>(function CardFace(
   if (side === "front") {
     return (
       <div ref={ref} style={{
-        width, height: H, borderRadius: s(10), overflow: "hidden", background: frenteFundo,
+        width, height: H, borderRadius: 0, overflow: "hidden", background: frenteFundo,
         position: "relative", display: "flex", flexDirection: "column", ...bordaStyle(v, s),
       }}>
         {mostrarNumero && v.numero != null && (
@@ -122,7 +122,7 @@ export const CardFace = forwardRef<HTMLDivElement, Props>(function CardFace(
   if (versoTipo === "logo") {
     return (
       <div ref={ref} style={{
-        width, height: H, borderRadius: s(10), overflow: "hidden", background: LOGO_VERSO.fundo,
+        width, height: H, borderRadius: 0, overflow: "hidden", background: LOGO_VERSO.fundo,
         border: `${s(10)}px solid ${LOGO_VERSO.moldura}`,
         boxShadow: `inset 0 0 0 ${s(2)}px rgba(255,255,255,0.35)`,
         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -143,7 +143,7 @@ export const CardFace = forwardRef<HTMLDivElement, Props>(function CardFace(
   /* ── VERSO: DESCRITIVO (colecionável) ── */
   return (
     <div ref={ref} style={{
-      width, height: H, borderRadius: s(10), overflow: "hidden", background: v.versoBg,
+      width, height: H, borderRadius: 0, overflow: "hidden", background: v.versoBg,
       position: "relative", display: "flex", flexDirection: "column", padding: s(15), ...bordaStyle(v, s),
     }}>
       <div style={{ textAlign: "center" }}>

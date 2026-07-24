@@ -4,19 +4,20 @@ import { CardFace, CARD_MM, CARD_PRINT_W } from "./card-faces"
 import type { CardView } from "../_actions/cards-shared"
 import "./card-studio.css"
 
-/* Gabarito: 4 colunas × 3 linhas = 12 cards por folha A4 (49 × 65 mm cada). */
+/* Gabarito: 4 colunas × 4 linhas = 16 cards por folha A4 (49 × 65 mm cada).
+   Largura: 4×49 + 3×2 = 202 mm (de 210) → 4 mm de margem lateral
+   Altura:  4×65 + 3×2 = 266 mm (de 297) → sobram 31 mm para margens/marcas */
 export const COLUNAS = 4
-export const LINHAS = 3
-export const CARDS_POR_FOLHA = COLUNAS * LINHAS // 12
+export const LINHAS = 4
+export const CARDS_POR_FOLHA = COLUNAS * LINHAS // 16
 
 const GAP_MM = 2      // espaço mínimo entre os cards
 const MARGEM_TOPO = 12
-// 4 × 49 + 3 × 2 = 202 mm → sobra 8 mm → 4 mm de margem lateral
 const MARGEM_LADO = (210 - (COLUNAS * CARD_MM.w + (COLUNAS - 1) * GAP_MM)) / 2
 
 const TRACO = "0.25mm"        // espessura da marca de corte
 const COR_TRACO = "#111"
-const TICK_V = 5              // comprimento das marcas verticais (mm)
+const TICK_V = 4              // comprimento das marcas verticais (mm)
 const TICK_H = 3              // comprimento das marcas horizontais (mm) — margem lateral é 4mm
 
 /** Posições (mm) das bordas verticais dos cards, da esquerda da folha. */
@@ -131,7 +132,9 @@ export function FolhaA4({ itens }: { itens: (ItemFolha | null)[] }) {
         ))}
       </div>
 
-      <div style={{ marginTop: "10mm" }}>
+      {/* posição fixa no rodapé: com 4 linhas o espaço é curto e a régua
+          não pode empurrar a grade */}
+      <div style={{ position: "absolute", left: `${MARGEM_LADO}mm`, top: `${FIM_GRADE + TICK_V + 4}mm` }}>
         <ReguaDeEscala />
       </div>
     </div>

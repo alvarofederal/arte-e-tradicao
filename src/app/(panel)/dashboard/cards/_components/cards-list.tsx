@@ -8,6 +8,7 @@ import type { CardRegistro } from "../_actions/cards-shared"
 import { cardToView, formatarNumero } from "../_actions/cards-shared"
 import { excluirCard } from "../_actions/cards-actions"
 import { CardFace } from "./card-faces"
+import { CARDS_POR_FOLHA } from "./folha-a4"
 
 export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
   const [cards, setCards] = useState(initialCards)
@@ -69,7 +70,7 @@ export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
               {sel.length > 0 && (
                 <>
                   {" · "}<strong>{sel.length}</strong> de {cards.length}
-                  {" · "}{Math.ceil(sel.length / 12)} folha{Math.ceil(sel.length / 12) > 1 ? "s" : ""} A4
+                  {" · "}{Math.ceil(sel.length / CARDS_POR_FOLHA)} folha{Math.ceil(sel.length / CARDS_POR_FOLHA) > 1 ? "s" : ""} A4
                 </>
               )}
             </span>
