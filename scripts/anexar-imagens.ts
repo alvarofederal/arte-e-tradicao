@@ -15,6 +15,7 @@ import fs from "node:fs"
 import path from "node:path"
 import sharp from "sharp"
 import { PrismaClient } from "../src/generated/prisma"
+import { enquadramentoInicial } from "../src/app/(panel)/dashboard/cards/_actions/cards-shared"
 
 const db = new PrismaClient()
 const PASTA = path.resolve(process.cwd(), "imagens-santos")
@@ -64,11 +65,16 @@ async function main() {
       .jpeg({ quality: 86 })
       .toBuffer()
 
+    // enquadra preservando o topo (rosto), em vez de centralizar
+    const meta = await sharp(buffer).metadata()
+    const posY = enquadramentoInicial(meta.width ?? 0, meta.height ?? 0)
+    const estilo = { ...(card.estilo as Record<string, unknown>), imgPosY: posY, imgPosX: 50, imgScale: 1 }
+
     const dataUrl = `data:image/jpeg;base64,${buffer.toString("base64")}`
-    await db.cardSanto.update({ where: { id: card.id }, data: { imagem: dataUrl } })
+    await db.cardSanto.update({ where: { id: card.id }, data: { imagem: dataUrl, estilo } })
 
     const kb = Math.round(buffer.length / 1024)
-    console.log(`  ✔ #${String(numero).padStart(3, "0")} ${card.nome}  ←  ${arquivo}  (${kb} KB)`)
+    console.log(`  ✔ #${String(numero).padStart(3, "0")} ${card.nome}  ←  ${arquivo}  (${kb} KB, topo ${posY}%)`)
     ok++
   }
 

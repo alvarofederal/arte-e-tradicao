@@ -68,3 +68,22 @@ export interface CardRegistro {
 export function formatarNumero(n: number | null | undefined): string {
   return n == null ? "" : String(n).padStart(3, "0")
 }
+
+/** Proporção (largura/altura) da área de imagem do card, já sem a faixa do nome. */
+export const CARD_FRAME_RATIO = 0.885
+
+/**
+ * Enquadramento inicial de uma imagem no card.
+ *
+ * Em arte sacra o rosto fica quase sempre no topo. Centralizar (50%) corta o
+ * mesmo tanto em cima e embaixo — e em pinturas de corpo inteiro isso decepa a
+ * cabeça. Aqui calculamos a posição vertical para que apenas ~4% do topo seja
+ * cortado, qualquer que seja a proporção da imagem.
+ */
+export function enquadramentoInicial(largura: number, altura: number): number {
+  if (!largura || !altura) return 50
+  const cortada = 1 - largura / altura / CARD_FRAME_RATIO // fração perdida na altura
+  if (cortada <= 0.001) return 50 // imagem deitada: não corta em cima
+  const pos = (0.04 / cortada) * 100
+  return Math.max(0, Math.min(50, Math.round(pos)))
+}

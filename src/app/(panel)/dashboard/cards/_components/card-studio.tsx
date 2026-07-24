@@ -10,7 +10,7 @@ import {
 } from "lucide-react"
 import "./card-studio.css"
 import type { BordaEstilo, CardEstilo, CardRegistro } from "../_actions/cards-shared"
-import { formatarNumero } from "../_actions/cards-shared"
+import { formatarNumero, enquadramentoInicial } from "../_actions/cards-shared"
 import { salvarCard } from "../_actions/cards-actions"
 
 const SERIF_UI = "var(--font-geist-mono), ui-monospace, monospace"
@@ -81,7 +81,9 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
         const ctx = canvas.getContext("2d")
         if (!ctx) return
         ctx.drawImage(img, 0, 0, w, h)
-        setD((prev) => ({ ...prev, imagem: canvas.toDataURL("image/jpeg", 0.86), imgScale: 1, imgPosX: 50, imgPosY: 50 }))
+        // enquadra preservando o topo (rosto), em vez de centralizar
+        const posY = enquadramentoInicial(w, h)
+        setD((prev) => ({ ...prev, imagem: canvas.toDataURL("image/jpeg", 0.86), imgScale: 1, imgPosX: 50, imgPosY: posY }))
       }
       img.src = reader.result as string
     }
