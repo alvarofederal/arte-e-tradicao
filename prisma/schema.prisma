@@ -128,7 +128,7 @@ enum TokenType {
 
 model CardSanto {
   id          String  @id @default(cuid())
-  numero      String?              // número da figurinha (ex.: "036")
+  numero      Int?    @unique      // nº GLOBAL, sequencial e PERMANENTE (nunca reaproveitado)
   nome        String
   subtitulo   String? @db.Text     // legado (padrão antigo)
   dataFesta   String?              // data comemorativa DD/MM (ex.: "15/10")

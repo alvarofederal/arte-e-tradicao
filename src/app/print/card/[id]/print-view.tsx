@@ -4,9 +4,9 @@ import Link from "next/link"
 import { ArrowLeft, Printer, Scissors } from "lucide-react"
 import type { CardRegistro } from "@/app/(panel)/dashboard/cards/_actions/cards-shared"
 import { cardToView } from "@/app/(panel)/dashboard/cards/_actions/cards-shared"
-import { CardFace } from "@/app/(panel)/dashboard/cards/_components/card-faces"
+import { CardFace, CARD_PRINT_W } from "@/app/(panel)/dashboard/cards/_components/card-faces"
 
-const PRINT_W = 189 // ~50 mm a 96 dpi (tamanho real da figurinha)
+const PRINT_W = CARD_PRINT_W
 
 export function PrintView({ card }: { card: CardRegistro }) {
   const view = cardToView(card)
@@ -47,7 +47,7 @@ export function PrintView({ card }: { card: CardRegistro }) {
           </div>
 
           <p style={{ marginTop: "10mm", fontSize: 11, color: "#999", display: "flex", alignItems: "center", gap: 6 }}>
-            <Scissors size={13} /> Recorte na moldura. Tamanho real: 5 × 7 cm (figurinha).
+            <Scissors size={13} /> Recorte na moldura. Tamanho real: 4,9 × 6,5 cm (figurinha).
           </p>
         </div>
       </div>

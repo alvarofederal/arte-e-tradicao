@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
-import { LayoutDashboard, Palette, X, LogOut, Cross } from "lucide-react"
+import { LayoutDashboard, Palette, Brain, X, LogOut, Cross } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { TopNavbar } from "./top-navbar"
 
@@ -20,8 +20,9 @@ import { TopNavbar } from "./top-navbar"
    ──────────────────────────────────────────────────────────────── */
 
 const nav: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/dashboard",       label: "Visão Geral",      icon: LayoutDashboard },
-  { href: "/dashboard/cards", label: "Cards dos Santos", icon: Palette         },
+  { href: "/dashboard",          label: "Visão Geral",      icon: LayoutDashboard },
+  { href: "/dashboard/cards",    label: "Cards dos Santos", icon: Palette         },
+  { href: "/dashboard/memoria",  label: "Jogo da Memória",  icon: Brain           },
 ]
 
 const lojistaNav = nav

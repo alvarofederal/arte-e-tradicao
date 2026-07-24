@@ -7,6 +7,18 @@
 ## Contexto
 Ferramenta visual onde o Álvaro monta os **cards dos Santos**: sobe a imagem, escolhe a borda, edita o nome do Santo na frente e escreve uma descrição no verso. Os cards são gerados **aos pares** (jogo da memória) e diagramados para **impressão em folha A4**. A mesma ferramenta serve depois às figurinhas do álbum.
 
+## Decisões de alinhamento (jul/2026) — **valem sobre o texto original abaixo**
+
+1. **Propósito:** este módulo é **ferramenta interna de produção** (gerar → imprimir → recortar → vender). A venda é **privada** por ora; o e-commerce vem depois.
+2. **São DUAS funcionalidades distintas**, com o mesmo catálogo de Santos:
+   - **Card colecionável** → frente com **número**; verso **descritivo**.
+   - **Jogo da memória** ([spec 005](../005-produto-jogo-memoria/spec.md)) → **2 cards iguais** por Santo, **sem numeração**, verso **padrão com a logo** (uniforme — senão dá para identificar a carta de costas).
+3. **Tamanho real: 49 × 65 mm** (figurinha da Copa). Confirmado com foto de referência.
+4. **Numeração:** **global, sequencial e permanente**. Atribuída pelo servidor (maior + 1), **nunca digitada** e **nunca alterada**. Motivo do Álvaro: o mesmo Santo precisa ter sempre o mesmo número para trocas entre colecionadores ("qual card sumiu?"). Card excluído **deixa buraco** — não renumera.
+5. **Número fica na FRENTE** (como nas figurinhas de referência). *O pedido anterior de colocá-lo no verso foi retificado pelo Álvaro.*
+6. **Gabarito A4: 4 colunas × 3 linhas = 12 cards por folha**, com ~2 mm entre eles e linha tracejada de corte. 4 folhas = 48 cards.
+7. **Frente e verso intercalados e espelhados** para impressão duplex (o verso cai atrás da frente certa).
+
 ## Requisitos do Álvaro (capturados literalmente)
 1. **Gerador de imagens** parecido com o do Courtesyfy (upload + configuração visual do card).
 2. **Upload do card**: subir a imagem base do Santo.

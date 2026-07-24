@@ -24,7 +24,7 @@ export interface CardEstilo {
 
 /** Visão achatada usada para renderizar o card (conteúdo + estilo). */
 export type CardView = CardEstilo & {
-  numero: string
+  numero: number | null
   nome: string
   dataFesta: string
   descricao: string
@@ -42,9 +42,9 @@ export function cardToView(c: CardRegistro): CardView {
   }
 }
 
+/** O número é global, sequencial e permanente — atribuído pelo servidor, nunca digitado. */
 export interface SalvarCardInput {
   id?: string | null
-  numero: string
   nome: string
   dataFesta: string
   descricao: string
@@ -54,11 +54,16 @@ export interface SalvarCardInput {
 
 export interface CardRegistro {
   id: string
-  numero: string
+  numero: number | null
   nome: string
   dataFesta: string
   descricao: string
   imagem: string | null
   estilo: CardEstilo
   atualizadoEm: string
+}
+
+/** Formata o número no padrão da coleção: 7 → "007". */
+export function formatarNumero(n: number | null | undefined): string {
+  return n == null ? "" : String(n).padStart(3, "0")
 }

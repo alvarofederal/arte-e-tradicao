@@ -30,7 +30,6 @@ const estiloSchema = z.object({
 
 const salvarSchema = z.object({
   id: z.string().nullish(),
-  numero: z.string().trim().max(12).default(""),
   nome: z.string().trim().min(1, "Informe o nome do Santo").max(120),
   dataFesta: z.string().trim().max(12).default(""),
   descricao: z.string().max(4000).default(""),
@@ -46,7 +45,7 @@ async function exigirUsuario() {
 
 function toRegistro(c: {
   id: string
-  numero: string | null
+  numero: number | null
   nome: string
   dataFesta: string | null
   descricao: string | null
@@ -56,7 +55,7 @@ function toRegistro(c: {
 }): CardRegistro {
   return {
     id: c.id,
-    numero: c.numero ?? "",
+    numero: c.numero,
     nome: c.nome,
     dataFesta: c.dataFesta ?? "",
     descricao: c.descricao ?? "",
@@ -70,6 +69,16 @@ export async function listarCards(): Promise<CardRegistro[]> {
   await exigirUsuario()
   const cards = await db.cardSanto.findMany({ orderBy: { atualizadoEm: "desc" } })
   return cards.map(toRegistro)
+}
+
+/** Busca vários cards por id, em ordem de catálogo (número). */
+export async function obterCardsPorIds(ids: string[]): Promise<CardRegistro[]> {
+  await exigirUsuario()
+  if (!ids.length) return []
+  const cards = await db.cardSanto.findMany({ where: { id: { in: ids } } })
+  return cards
+    .sort((a, b) => (a.numero ?? 0) - (b.numero ?? 0))
+    .map(toRegistro)
 }
 
 export async function obterCard(id: string): Promise<CardRegistro | null> {
@@ -90,7 +99,6 @@ export async function salvarCard(
   const v = parsed.data
 
   const data = {
-    numero: v.numero || null,
     nome: v.nome,
     dataFesta: v.dataFesta || null,
     descricao: v.descricao || null,
@@ -99,9 +107,16 @@ export async function salvarCard(
   }
 
   try {
-    const card = v.id
-      ? await db.cardSanto.update({ where: { id: v.id }, data })
-      : await db.cardSanto.create({ data: { ...data, criadoPorId: user.id } })
+    let card
+    if (v.id) {
+      // Alteração: o número é permanente, nunca muda.
+      card = await db.cardSanto.update({ where: { id: v.id }, data })
+    } else {
+      // Criação: número GLOBAL sequencial (maior + 1), nunca reaproveitado.
+      const maior = await db.cardSanto.aggregate({ _max: { numero: true } })
+      const numero = (maior._max.numero ?? 0) + 1
+      card = await db.cardSanto.create({ data: { ...data, numero, criadoPorId: user.id } })
+    }
     revalidatePath("/dashboard/cards")
     return { ok: true, card: toRegistro(card) }
   } catch (e) {

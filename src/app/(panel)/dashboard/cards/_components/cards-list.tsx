@@ -3,15 +3,20 @@
 import { useState } from "react"
 import Link from "next/link"
 import { toast } from "sonner"
-import { Plus, Pencil, Trash2, Sparkles, Palette } from "lucide-react"
+import { Plus, Pencil, Trash2, Sparkles, Palette, Printer, Check, Eraser } from "lucide-react"
 import type { CardRegistro } from "../_actions/cards-shared"
-import { cardToView } from "../_actions/cards-shared"
+import { cardToView, formatarNumero } from "../_actions/cards-shared"
 import { excluirCard } from "../_actions/cards-actions"
 import { CardFace } from "./card-faces"
 
 export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
   const [cards, setCards] = useState(initialCards)
   const [excluindo, setExcluindo] = useState<string | null>(null)
+  const [sel, setSel] = useState<string[]>([])
+
+  function alternarSel(id: string) {
+    setSel((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]))
+  }
 
   async function excluir(card: CardRegistro) {
     if (!confirm(`Excluir o card "${card.nome}"? Esta ação não pode ser desfeita.`)) return
@@ -43,6 +48,25 @@ export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
         </Link>
       </div>
 
+      {/* Barra de impressão em folha (colecionável) */}
+      {sel.length > 0 && (
+        <div className="dash-card mb-5 flex flex-wrap items-center justify-between gap-3 p-4">
+          <span className="dash-subtitle text-sm">
+            <strong>{sel.length}</strong> card{sel.length > 1 ? "s" : ""} selecionado{sel.length > 1 ? "s" : ""} ·{" "}
+            {Math.ceil(sel.length / 12)} folha{Math.ceil(sel.length / 12) > 1 ? "s" : ""} A4
+          </span>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setSel([])} className="dash-muted inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs hover:opacity-80">
+              <Eraser size={14} /> Limpar
+            </button>
+            <Link href={`/print/folha?modo=colecionavel&ids=${sel.join(",")}`}
+              className="dash-btn-primary inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold">
+              <Printer size={16} /> Imprimir folha
+            </Link>
+          </div>
+        </div>
+      )}
+
       {cards.length === 0 ? (
         <div className="dash-card flex flex-col items-center justify-center gap-3 p-14 text-center">
           <span className="grid h-14 w-14 place-items-center rounded-2xl" style={{ background: "rgba(201,162,75,0.14)", color: "#A67C2E" }}>
@@ -59,13 +83,24 @@ export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
           {cards.map((card) => (
-            <div key={card.id} className="dash-card p-3">
+            <div key={card.id} className="dash-card relative p-3"
+              style={sel.includes(card.id) ? { borderColor: "#C9A24B", boxShadow: "0 0 0 2px #C9A24B" } : undefined}>
+              <button
+                onClick={() => alternarSel(card.id)}
+                title={sel.includes(card.id) ? "Remover da folha" : "Incluir na folha de impressão"}
+                className="absolute left-2 top-2 z-10 grid h-6 w-6 place-items-center rounded-md border transition-colors"
+                style={sel.includes(card.id)
+                  ? { background: "#C9A24B", borderColor: "#C9A24B", color: "#fff" }
+                  : { background: "rgba(255,255,255,0.9)", borderColor: "rgba(0,0,0,0.2)", color: "transparent" }}
+              >
+                <Check size={14} strokeWidth={3} />
+              </button>
               <Link href={`/dashboard/cards/${card.id}`} className="flex justify-center" title={`Alterar: ${card.nome}`}>
                 <CardFace view={cardToView(card)} side="front" width={150} />
               </Link>
               <div className="mt-2.5 px-0.5">
                 <p className="dash-title truncate text-sm font-semibold" title={card.nome}>
-                  {card.numero ? `${card.numero} · ` : ""}{card.nome || "Sem nome"}
+                  {card.numero != null ? `${formatarNumero(card.numero)} · ` : ""}{card.nome || "Sem nome"}
                 </p>
                 {card.dataFesta && <p className="dash-muted truncate text-xs">Comemora {card.dataFesta}</p>}
               </div>

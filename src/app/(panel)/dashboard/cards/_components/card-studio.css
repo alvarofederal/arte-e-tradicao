@@ -73,14 +73,18 @@
 @media print {
   .print-toolbar { display: none !important; }
   .print-screen { background: #fff !important; min-height: 0 !important; }
+  /* margem 0 na página: o posicionamento em mm é controlado no próprio papel */
+  @page { size: A4; margin: 0; }
   .print-page {
     box-shadow: none !important;
-    width: auto !important;
-    min-height: 0 !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 14mm !important;
   }
-  @page { size: A4; margin: 14mm; }
+  /* cada folha do gabarito ocupa uma página */
+  .folha-a4 { break-after: page; page-break-after: always; box-shadow: none !important; margin: 0 !important; }
+  .folha-a4:last-of-type { break-after: auto; page-break-after: auto; }
   html, body { background: #fff !important; }
   /* congela o brilho/holográfico para não sair risco branco na impressão */
   .cardstudio-shine::after,

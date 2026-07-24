@@ -10,11 +10,14 @@ import {
 } from "lucide-react"
 import "./card-studio.css"
 import type { BordaEstilo, CardEstilo, CardRegistro } from "../_actions/cards-shared"
+import { formatarNumero } from "../_actions/cards-shared"
 import { salvarCard } from "../_actions/cards-actions"
+
+const SERIF_UI = "var(--font-geist-mono), ui-monospace, monospace"
 import { CardFace } from "./card-faces"
 
 interface Design extends CardEstilo {
-  numero: string
+  numero: number | null // atribuído pelo servidor (global, permanente)
   nome: string
   dataFesta: string
   descricao: string
@@ -22,7 +25,7 @@ interface Design extends CardEstilo {
 }
 
 const NOVO: Design = {
-  numero: "", nome: "", dataFesta: "", descricao: "", imagem: null,
+  numero: null, nome: "", dataFesta: "", descricao: "", imagem: null,
   frenteBg: "#EEE6D5", frenteBg2: "#E3D8C0", usarGradiente: false,
   faixaCor: "#F5ECD6", nomeCor: "#2E2A26", subtituloCor: "#3B322E",
   brilho: false, holografico: false,
@@ -68,7 +71,7 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
     reader.onload = () => {
       const img = new Image()
       img.onload = () => {
-        const maxW = 1000
+        const maxW = 1400
         const scale = Math.min(1, maxW / img.width)
         const w = Math.round(img.width * scale)
         const h = Math.round(img.height * scale)
@@ -87,7 +90,7 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
 
   function payload() {
     return {
-      id: cardId, numero: d.numero, nome: d.nome, dataFesta: d.dataFesta,
+      id: cardId, nome: d.nome, dataFesta: d.dataFesta,
       descricao: d.descricao, imagem: d.imagem, estilo: extrairEstilo(d),
     }
   }
@@ -158,14 +161,20 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
         {/* ─── CONTROLES ─── */}
         <div className="space-y-5">
           <Section title="Conteúdo">
-            <div className="grid grid-cols-[90px_1fr] gap-3">
-              <Field label="Número">
-                <input className="dash-input" value={d.numero} onChange={(e) => set("numero", e.target.value)} placeholder="036" />
+            <div className="grid grid-cols-[104px_1fr] gap-3">
+              <Field label="Número (automático)">
+                <div className="dash-input flex items-center justify-center" style={{ fontFamily: SERIF_UI, fontWeight: 700, letterSpacing: "0.04em" }}
+                  title="Número global, sequencial e permanente — atribuído pelo sistema">
+                  {d.numero != null ? formatarNumero(d.numero) : "—"}
+                </div>
               </Field>
               <Field label="Nome do Santo">
                 <input className="dash-input" value={d.nome} onChange={(e) => set("nome", e.target.value)} placeholder="Ex.: Santa Teresa d'Ávila" />
               </Field>
             </div>
+            {d.numero == null && (
+              <p className="dash-muted -mt-1 text-xs">O número é atribuído automaticamente ao salvar, na sequência do catálogo.</p>
+            )}
             <Field label="Data comemorativa (dia/mês)">
               <input className="dash-input" value={d.dataFesta} onChange={(e) => set("dataFesta", e.target.value)} placeholder="Ex.: 15/10" />
             </Field>
@@ -255,7 +264,7 @@ export function CardStudio({ card }: { card?: CardRegistro | null }) {
           <div className="dash-card p-5">
             <div className="mb-3 flex items-center justify-between">
               <span className="dash-label">Pré-visualização</span>
-              <span className="dash-muted text-xs">5 × 7 cm · figurinha</span>
+              <span className="dash-muted text-xs">4,9 × 6,5 cm · figurinha</span>
             </div>
 
             <div className="flex flex-wrap items-start justify-center gap-5">
