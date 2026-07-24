@@ -117,6 +117,20 @@
 }
 .arte-tag-hist { background: rgba(201,162,75,0.20); color: var(--arte-gold-deep); }
 
+/* Figurinha da vitrine do álbum — leve destaque ao passar o mouse */
+.arte-figurinha {
+  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s ease;
+}
+.arte-figurinha:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 10px 22px rgba(59, 50, 46, 0.28);
+  z-index: 3;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arte-figurinha { transition: none; }
+  .arte-figurinha:hover { transform: none; }
+}
+
 /* Halo suave atrás do herói (auréola) */
 .arte-halo {
   position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;

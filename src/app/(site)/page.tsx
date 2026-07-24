@@ -2,8 +2,9 @@
 import Link from "next/link";
 import {
   Puzzle, Brain, Album, Sparkles, QrCode, Heart, ArrowRight,
-  Cross, Church, HandHeart, Palette, Users, Star,
+  Church, HandHeart, Palette, Users,
 } from "lucide-react";
+import { AlbumVitrine } from "./_components/album-vitrine";
 
 const produtos = [
   {
@@ -117,34 +118,8 @@ export default function Home() {
             </ol>
           </div>
 
-          {/* Mock do álbum */}
-          <div className="arte-card p-7">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg">Coleção: Santos do Brasil</h3>
-              <span className="arte-tag">42 / 60</span>
-            </div>
-            <div className="mt-5 grid grid-cols-5 gap-2.5">
-              {Array.from({ length: 20 }).map((_, i) => {
-                const filled = i % 4 !== 3;
-                return (
-                  <div
-                    key={i}
-                    className="grid aspect-[3/4] place-items-center rounded-lg text-xs"
-                    style={
-                      filled
-                        ? { background: "linear-gradient(160deg, rgba(201,162,75,0.22), rgba(228,203,144,0.12))", border: "1px solid var(--arte-line-gold)", color: "var(--arte-gold-deep)" }
-                        : { background: "rgba(59,50,46,0.04)", border: "1px dashed var(--arte-line)", color: "rgba(59,50,46,0.25)" }
-                    }
-                  >
-                    {filled ? <Star size={16} /> : <Cross size={14} />}
-                  </div>
-                );
-              })}
-            </div>
-            <p className="mt-4 text-center text-xs" style={{ color: "var(--arte-ink-soft)" }}>
-              Faltam 18 figurinhas para completar. Troque as repetidas com amigos!
-            </p>
-          </div>
+          {/* Álbum com os Santos reais do catálogo */}
+          <AlbumVitrine />
         </div>
       </section>
 
