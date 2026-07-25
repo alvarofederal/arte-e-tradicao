@@ -4,9 +4,10 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import { Brain, Check, Printer, Sparkles, Eraser, Layers } from "lucide-react"
 import type { CardRegistro } from "../../cards/_actions/cards-shared"
-import { cardToView, formatarNumero } from "../../cards/_actions/cards-shared"
+import { cardToView, formatarNumero, amostraAleatoria } from "../../cards/_actions/cards-shared"
 import { CardFace } from "../../cards/_components/card-faces"
 import { CARDS_POR_FOLHA } from "../../cards/_components/folha-a4"
+import { SeletorAleatorio } from "../../cards/_components/seletor-aleatorio"
 
 const ALVO_SANTOS = 24 // 24 pares = 48 cards = 4 folhas
 
@@ -49,13 +50,15 @@ export function MemoriaBuilder({ cards }: { cards: CardRegistro[] }) {
           <Contador valor={conta.folhas} rotulo={`Folha${conta.folhas === 1 ? "" : "s"} A4`} />
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <SeletorAleatorio total={cards.length} padrao={ALVO_SANTOS}
+            onSortear={(n) => setSel(amostraAleatoria(cards, n).map((c) => c.id))} />
           <button
-            onClick={() => setSel(cards.slice(0, ALVO_SANTOS).map((c) => c.id))}
+            onClick={() => setSel(cards.map((c) => c.id))}
             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold"
-            style={{ background: "rgba(201,162,75,0.14)", color: "#A67C2E" }}
-            title={`Seleciona os primeiros ${ALVO_SANTOS} — o jogo padrão de 48 cards`}
+            style={{ background: "rgba(201,162,75,0.10)", color: "#A67C2E" }}
+            title="Selecionar todos os Santos do catálogo"
           >
-            <Layers size={14} /> Jogo padrão ({ALVO_SANTOS})
+            <Layers size={14} /> Todos ({cards.length})
           </button>
           {sel.length > 0 && (
             <button onClick={() => setSel([])} className="dash-muted inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs hover:opacity-80">

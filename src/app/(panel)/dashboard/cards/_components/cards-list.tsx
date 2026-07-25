@@ -5,10 +5,11 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { Plus, Pencil, Trash2, Sparkles, Palette, Printer, Check, Eraser, Minus } from "lucide-react"
 import type { CardRegistro } from "../_actions/cards-shared"
-import { cardToView, formatarNumero } from "../_actions/cards-shared"
+import { cardToView, formatarNumero, amostraAleatoria } from "../_actions/cards-shared"
 import { excluirCard } from "../_actions/cards-actions"
 import { CardFace } from "./card-faces"
 import { CARDS_POR_FOLHA } from "./folha-a4"
+import { SeletorAleatorio } from "./seletor-aleatorio"
 
 export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
   const [cards, setCards] = useState(initialCards)
@@ -57,24 +58,28 @@ export function CardsList({ initialCards }: { initialCards: CardRegistro[] }) {
       {/* Barra de seleção / impressão em folha (colecionável) */}
       {cards.length > 0 && (
         <div className="dash-card mb-5 flex flex-wrap items-center justify-between gap-3 p-4">
-          <button onClick={alternarTodos} className="flex items-center gap-2.5 text-left"
-            title={todosSelecionados ? "Desmarcar todos" : "Selecionar todos"}>
-            <span className="grid h-6 w-6 place-items-center rounded-md border transition-colors"
-              style={sel.length > 0
-                ? { background: "#C9A24B", borderColor: "#C9A24B", color: "#fff" }
-                : { background: "transparent", borderColor: "rgba(128,128,128,0.5)", color: "transparent" }}>
-              {todosSelecionados ? <Check size={14} strokeWidth={3} /> : <Minus size={14} strokeWidth={3} />}
-            </span>
-            <span className="dash-subtitle text-sm">
-              {todosSelecionados ? "Desmarcar todos" : "Selecionar todos"}
-              {sel.length > 0 && (
-                <>
-                  {" · "}<strong>{sel.length}</strong> de {cards.length}
-                  {" · "}{Math.ceil(sel.length / CARDS_POR_FOLHA)} folha{Math.ceil(sel.length / CARDS_POR_FOLHA) > 1 ? "s" : ""} A4
-                </>
-              )}
-            </span>
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button onClick={alternarTodos} className="flex items-center gap-2.5 text-left"
+              title={todosSelecionados ? "Desmarcar todos" : "Selecionar todos"}>
+              <span className="grid h-6 w-6 place-items-center rounded-md border transition-colors"
+                style={sel.length > 0
+                  ? { background: "#C9A24B", borderColor: "#C9A24B", color: "#fff" }
+                  : { background: "transparent", borderColor: "rgba(128,128,128,0.5)", color: "transparent" }}>
+                {todosSelecionados ? <Check size={14} strokeWidth={3} /> : <Minus size={14} strokeWidth={3} />}
+              </span>
+              <span className="dash-subtitle text-sm">
+                {todosSelecionados ? "Desmarcar todos" : "Selecionar todos"}
+                {sel.length > 0 && (
+                  <>
+                    {" · "}<strong>{sel.length}</strong> de {cards.length}
+                    {" · "}{Math.ceil(sel.length / CARDS_POR_FOLHA)} folha{Math.ceil(sel.length / CARDS_POR_FOLHA) > 1 ? "s" : ""} A4
+                  </>
+                )}
+              </span>
+            </button>
+            <SeletorAleatorio total={cards.length} padrao={Math.min(16, cards.length)}
+              onSortear={(n) => setSel(amostraAleatoria(cards, n).map((c) => c.id))} />
+          </div>
 
           {sel.length > 0 && (
             <div className="flex items-center gap-2">

@@ -69,6 +69,16 @@ export function formatarNumero(n: number | null | undefined): string {
   return n == null ? "" : String(n).padStart(3, "0")
 }
 
+/** Embaralha (Fisher-Yates) e devolve N itens aleatórios — para sortear cards. */
+export function amostraAleatoria<T>(itens: T[], n: number): T[] {
+  const a = [...itens]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a.slice(0, Math.max(0, Math.min(n, a.length)))
+}
+
 /** Proporção (largura/altura) da área de imagem do card, já sem a faixa do nome. */
 export const CARD_FRAME_RATIO = 0.885
 
