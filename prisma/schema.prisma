@@ -138,10 +138,55 @@ model Santo {
   bordaCor     String?            // cor tema (herdada do card)
   ativo        Boolean  @default(true)
 
+  produtos     Produto[]
+
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
   @@map("santos")
+}
+
+// ─────────────────────────────────────────
+// LOJA — Categorias e Produtos
+// ─────────────────────────────────────────
+
+model Categoria {
+  id       String  @id @default(cuid())
+  nome     String
+  slug     String  @unique
+  ordem    Int     @default(0)
+  ativo    Boolean @default(true)
+
+  produtos Produto[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("categorias")
+}
+
+model Produto {
+  id            String  @id @default(cuid())
+  sku           String  @unique
+  nome          String
+  slug          String  @unique
+  descricao     String? @db.Text
+  precoCentavos Int     @default(0) // preço em centavos (evita ponto flutuante)
+  estoque       Int     @default(0)
+  imagem        String? @db.LongText // foto do produto; se vazio, usa a do Santo
+  ativo         Boolean @default(true)
+
+  santoId     String?
+  santo       Santo?     @relation(fields: [santoId], references: [id])
+  categoriaId String?
+  categoria   Categoria? @relation(fields: [categoriaId], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@index([santoId])
+  @@index([categoriaId])
+  @@map("produtos")
 }
 
 // ─────────────────────────────────────────

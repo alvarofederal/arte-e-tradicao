@@ -40,7 +40,8 @@ status, PIX) · `CodigoSorte` (código, → Santo, lote, estado, prêmio) · `Vo
       Reaproveita nome/data/história/imagem/cor do CardSanto. QR gerado por Santo, com download
       para a embalagem. SEO (metadados + Open Graph por Santo). Imagens da vitrine da home movidas
       para `/catalogo` (evita conflito com a rota `/santos`).
-- [ ] Passo 2 — Admin: CRUD de Categorias + Produtos (SKU), Produto ligado ao Santo.
+- [x] **Passo 2 — Admin: CRUD de Categorias + Produtos (SKU)**, Produto ligado ao Santo e à
+      Categoria (preço em centavos, estoque, foto, ativo). Itens no menu do painel.
 - [ ] Passo 3 — Loja: vitrine + página de produto + carrinho.
 - [ ] Passo 4 — Checkout + Pedido + PIX manual + painel de pedidos.
 - [ ] Passo 5 — Código da Sorte (gerar/liberar/exportar + tentar a sorte + voucher).
