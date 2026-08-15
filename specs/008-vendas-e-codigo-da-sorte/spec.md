@@ -1,6 +1,7 @@
 # Spec 008 — Fase de Vendas: Site, Loja, Admin e Código da Sorte
 
-> **Status:** Em andamento · Aprovado pelo Álvaro (jul/2026). Consolida a fase de
+> **Status:** ✅ Implementado (site + loja + admin + Código da Sorte, ago/2026) ·
+> Aprovado pelo Álvaro (jul/2026). Consolida a fase de
 > vendas e referencia [001-site](../001-site-divulgacao/spec.md),
 > [002-ecommerce](../002-ecommerce/spec.md), [003-admin](../003-area-administrativa/spec.md),
 > [004-quebra-cabeças](../004-produto-quebra-cabecas/spec.md).
@@ -42,10 +43,30 @@ status, PIX) · `CodigoSorte` (código, → Santo, lote, estado, prêmio) · `Vo
       para `/catalogo` (evita conflito com a rota `/santos`).
 - [x] **Passo 2 — Admin: CRUD de Categorias + Produtos (SKU)**, Produto ligado ao Santo e à
       Categoria (preço em centavos, estoque, foto, ativo). Itens no menu do painel.
-- [ ] Passo 3 — Loja: vitrine + página de produto + carrinho.
-- [ ] Passo 4 — Checkout + Pedido + PIX manual + painel de pedidos.
-- [ ] Passo 5 — Código da Sorte (gerar/liberar/exportar + tentar a sorte + voucher).
-- [ ] Depois — gateway de pagamento, frete, colecionismo avançado.
+- [x] **Passo 3 — Loja:** vitrine ligada ao banco com **menu lateral de categorias**,
+      página de produto (adicionar/comprar), **carrinho** (Context + localStorage) e seção
+      "quebra-cabeças deste Santo" na página do Santo.
+- [x] **Passo 4 — Checkout + Pedido + PIX:** checkout com login obrigatório (retorno via
+      `callbackUrl`), modelos `Pedido`/`ItemPedido`/`PedidoStatus`, **PIX Copia-e-Cola**
+      (BR Code EMV + CRC16, `src/lib/pix.ts`) com QR e valor exato, página de confirmação,
+      "Meus pedidos" na conta e **painel de pedidos** (filtro por status, confirmar
+      pagamento/envio, cancelar/reabrir).
+- [x] **Passo 5 — Código da Sorte:** `CodigoSorte` + `Voucher`; admin gera **lote por Santo
+      com tabela de prêmios**, libera/bloqueia e exporta **CSV**; cliente resgata em
+      "Tente a sorte" → voucher (desconto até 50%, 90 dias) que **não vale para o Santo da
+      caixa**; aplicação no checkout (recálculo server-authoritative).
+- [x] **Extra — Admin de usuários/compradores** (`/dashboard/usuarios`, só SUPER_ADMIN):
+      nível (Cliente/Lojista/Admin), ativar/desativar, verificar e-mail manualmente.
+      Cadastro público agora cria **CLIENTE**; painel bloqueia CLIENTE.
+- [ ] Depois — gateway de pagamento, frete, colecionismo avançado, baixa de estoque
+      automática na confirmação do pagamento, unificação Santo/CardSanto.
+
+## Variáveis de ambiente (Vercel)
+- `PIX_CHAVE`, `PIX_NOME`, `PIX_CIDADE` — habilitam o PIX Copia-e-Cola no checkout.
+  Sem elas, a página do pedido mostra um aviso amigável (não quebra).
+- `NEXT_PUBLIC_SITE_URL` — domínio próprio quando houver (o QR das embalagens usa isso).
+  ⚠️ Havia `NEXT_PUBLIC_URL=http://localhost:3000` no ambiente; o `baseUrl()` agora
+  ignora localhost, mas convém corrigir/remover essa variável na Vercel.
 
 ## Notas técnicas / dívidas
 - Páginas de Santo usam ISR (`revalidate 3600`); imagem ainda em dataURL no banco —
