@@ -149,6 +149,11 @@ export default function Home() {
             </span>
           ))}
         </div>
+        <div className="mt-8 text-center">
+          <Link href="/santos" className="arte-btn arte-btn-ghost">
+            Conheça todos os Santos <ArrowRight size={16} />
+          </Link>
+        </div>
       </section>
 
       {/* ═══════════════ CTA FINAL ═══════════════ */}

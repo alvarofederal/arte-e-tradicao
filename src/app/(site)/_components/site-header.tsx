@@ -5,7 +5,7 @@ import { Cross, ShoppingBag } from "lucide-react";
 const nav = [
   { href: "/#produtos", label: "Produtos" },
   { href: "/#historia", label: "Nossa história" },
-  { href: "/#santos", label: "Santos" },
+  { href: "/santos", label: "Santos" },
   { href: "/loja", label: "Loja" },
 ];
 

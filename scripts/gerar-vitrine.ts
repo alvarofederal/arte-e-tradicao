@@ -16,7 +16,8 @@ import { PrismaClient } from "../src/generated/prisma"
 const db = new PrismaClient()
 
 const LARGURA_MINIATURA = 260 // suficiente para a grade da home, inclusive em telas retina
-const DIR_IMG = path.resolve(process.cwd(), "public", "santos")
+// fora de /santos para não conflitar com a rota /santos/[slug]
+const DIR_IMG = path.resolve(process.cwd(), "public", "catalogo")
 const ARQ_MANIFESTO = path.resolve(process.cwd(), "src", "data", "vitrine.json")
 
 interface ItemVitrine {
@@ -66,7 +67,7 @@ async function main() {
       numero: c.numero ?? 0,
       nome: c.nome,
       dataFesta: c.dataFesta ?? "",
-      arquivo: `/santos/${nomeArq}`,
+      arquivo: `/catalogo/${nomeArq}`,
       bordaCor: String(e.bordaCor ?? "#C9A24B"),
       faixaCor: String(e.faixaCor ?? "#F5ECD6"),
       nomeCor: String(e.nomeCor ?? "#2E2A26"),
@@ -83,7 +84,7 @@ async function main() {
 
   const total = vitrine.reduce((s, v) => s + fs.statSync(path.join(DIR_IMG, path.basename(v.arquivo))).size, 0)
   console.log(`\n✔ ${vitrine.length} Santos na vitrine — ${Math.round(total / 1024)} KB no total.`)
-  console.log(`  imagens:   public/santos/`)
+  console.log(`  imagens:   public/catalogo/`)
   console.log(`  manifesto: src/data/vitrine.json`)
 }
 

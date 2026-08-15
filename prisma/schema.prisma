@@ -123,6 +123,28 @@ enum TokenType {
 }
 
 // ─────────────────────────────────────────
+// SANTOS (catálogo — páginas do site + produtos + código da sorte)
+// ─────────────────────────────────────────
+
+model Santo {
+  id           String   @id @default(cuid())
+  numero       Int?     @unique   // nº do catálogo (herda do CardSanto)
+  nome         String
+  slug         String   @unique   // URL: /santos/[slug]
+  dataFesta    String?            // data litúrgica (dia/mês[/ano])
+  historia     String?  @db.Text  // história/biografia devocional
+  oracao       String?  @db.Text  // oração (opcional)
+  imagem       String?  @db.LongText // dataURL — futuro: Cloudinary
+  bordaCor     String?            // cor tema (herdada do card)
+  ativo        Boolean  @default(true)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("santos")
+}
+
+// ─────────────────────────────────────────
 // CARDS DOS SANTOS (estúdio de cards — spec 007)
 // ─────────────────────────────────────────
 
