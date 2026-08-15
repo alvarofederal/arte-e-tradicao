@@ -30,6 +30,21 @@ corte e vinco, ~40 peças, artesanal). Ferramenta interna + loja pública.
 - Cliente resgata no **perfil logado**: input central "Tente a sorte"; comprou 10 caixas
   = 10 tentativas. Anti-fraude: rate-limit por usuário/IP.
 
+## Refinamentos (ago/2026)
+- **Prêmios em 3 níveis** (definidos na tabela do lote): **Desconto 1–50%**, **Grátis
+  (100%)** = um quebra-cabeça grátis de outro Santo, e **Sem prêmio (0%)** = código válido
+  mas não contemplado. Estratégia do Álvaro: numa rodada de 100, ~**10 grátis** na 1ª rodada
+  para difundir o programa, diminuindo nas seguintes ("muitos contemplados geram mais vendas").
+  Pedido com total zero (prêmio grátis) já entra como **PAGO** (nada a pagar).
+- **QR da embalagem é interno (produção)**: saiu da página pública do Santo. Agora fica em
+  `/dashboard/santos` ("Santos & QR"), de onde o Álvaro baixa o PNG para a arte da caixa.
+- **Estoque rigoroso**: baixa **atômica** na criação do pedido (impede vender além do
+  disponível, mesmo em cliques simultâneos); **devolve** ao cancelar e **rebaixa** ao reabrir
+  um cancelado. Carrinho e checkout respeitam o limite; produto sem estoque não é vendável.
+- **Cards pausados**: "Cards dos Santos", "Jogo da Memória" e a vitrine de álbum na home foram
+  ocultados do site e do painel (rotas mantidas). Foco 100% nos quebra-cabeças.
+- **Site**: nova página pública **`/como-funciona`** explicando a premiação + seção na home.
+
 ## Modelo de dados
 `Santo` (nome, slug, história, data, imagem, bordaCor) ✅ · `Categoria` · `Produto`
 (SKU → Santo, → Categoria, preço, estoque, fotos) · `Pedido` + `ItemPedido` (→ User,

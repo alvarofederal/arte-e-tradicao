@@ -5,10 +5,10 @@ import { CartButton } from "./cart/cart-button";
 import { AccountLink } from "./account-link";
 
 const nav = [
-  { href: "/#produtos", label: "Produtos" },
-  { href: "/#historia", label: "Nossa história" },
-  { href: "/santos", label: "Santos" },
   { href: "/loja", label: "Loja" },
+  { href: "/santos", label: "Santos" },
+  { href: "/como-funciona", label: "Como funciona" },
+  { href: "/#historia", label: "Nossa história" },
 ];
 
 export function SiteHeader() {

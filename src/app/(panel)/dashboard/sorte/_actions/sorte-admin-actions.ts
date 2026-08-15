@@ -6,7 +6,7 @@ import { db } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { slugify } from "@/lib/slug"
-import { gerarCodigosUnicos, DESCONTO_MAX, obterLoteCodigos } from "@/lib/codigo-sorte"
+import { gerarCodigosUnicos, obterLoteCodigos } from "@/lib/codigo-sorte"
 
 async function exigirEquipe() {
   const session = await auth()
@@ -24,7 +24,13 @@ const schema = z.object({
   distribuicao: z
     .array(
       z.object({
-        descontoPercent: z.number().int().min(1).max(DESCONTO_MAX),
+        // 0 = sem prêmio · 1..50 = desconto · 100 = grátis (quebra-cabeça grátis)
+        descontoPercent: z
+          .number()
+          .int()
+          .min(0)
+          .max(100)
+          .refine((n) => n === 0 || n === 100 || (n >= 1 && n <= 50), "Desconto deve ser 1–50%, Grátis (100%) ou Sem prêmio (0)."),
         quantidade: z.number().int().min(1).max(5000),
       }),
     )

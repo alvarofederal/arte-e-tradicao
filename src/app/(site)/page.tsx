@@ -1,26 +1,28 @@
 // src/app/(site)/page.tsx — Landing de divulgação da Arte & Tradição
 import Link from "next/link";
 import {
-  Puzzle, Brain, Album, Sparkles, QrCode, Heart, ArrowRight,
-  Church, HandHeart, Palette, Users,
+  Puzzle, Brain, Clover, Sparkles, Gift, Heart, ArrowRight,
+  Church, HandHeart, Palette, Users, Ticket,
 } from "lucide-react";
-import { AlbumVitrine } from "./_components/album-vitrine";
 
 const produtos = [
   {
     icon: Puzzle, tint: "arte-ic-gold", tag: "Nosso clássico", tagClass: "arte-tag arte-tag-hist",
     nome: "Quebra-cabeças dos Santos",
     desc: "Montar peça por peça a imagem de um Santo — e, ao final, conhecer sua história, sua data e sua oração. O produto que deu origem a tudo.",
+    href: "/loja", cta: "Ver na loja",
   },
   {
-    icon: Brain, tint: "arte-ic-sage", tag: "Novidade", tagClass: "arte-tag",
+    icon: Clover, tint: "arte-ic-sage", tag: "Em cada caixa", tagClass: "arte-tag",
+    nome: "Código da Sorte",
+    desc: "Todo quebra-cabeça traz um código premiado na embalagem. Cadastre-se, tente a sorte e ganhe descontos — ou até um quebra-cabeça grátis de outro Santo.",
+    href: "/como-funciona", cta: "Como funciona",
+  },
+  {
+    icon: Brain, tint: "arte-ic-blush", tag: "Em breve", tagClass: "arte-tag",
     nome: "Jogo da Memória dos Santos",
     desc: "Encontre os pares: o Santo e o seu símbolo — São Jorge e o dragão, Santa Luzia e os olhos, São Pedro e as chaves. Aprender iconografia brincando.",
-  },
-  {
-    icon: Album, tint: "arte-ic-blush", tag: "Novidade", tagClass: "arte-tag",
-    nome: "Álbum de Figurinhas dos Santos",
-    desc: "Cada produto traz um código. Escaneie, revele a figurinha e cole no seu álbum digital. Complete a coleção e conheça toda a comunhão dos Santos.",
+    href: null, cta: null,
   },
 ];
 
@@ -44,16 +46,17 @@ export default function Home() {
 
           <p className="arte-rise arte-rise-3 mx-auto mt-6 max-w-2xl text-lg">
             Somos a <strong style={{ color: "var(--arte-ink)" }}>Arte&nbsp;&amp;&nbsp;Tradição</strong>. Criamos
-            quebra-cabeças, jogos da memória e álbuns de figurinhas dos Santos da Igreja Católica —
-            arte sacra que une devoção, aprendizado e o prazer de brincar em família.
+            <strong style={{ color: "var(--arte-ink)" }}> quebra-cabeças dos Santos</strong> da Igreja Católica —
+            arte sacra que une devoção, aprendizado e o prazer de brincar em família. E cada caixa
+            pode premiar você.
           </p>
 
           <div className="arte-rise arte-rise-4 mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link href="/loja" className="arte-btn arte-btn-primary">
               Conheça a loja <ArrowRight size={17} />
             </Link>
-            <Link href="/#produtos" className="arte-btn arte-btn-ghost">
-              Ver os produtos
+            <Link href="/como-funciona" className="arte-btn arte-btn-ghost">
+              Como funciona a premiação
             </Link>
           </div>
 
@@ -69,12 +72,12 @@ export default function Home() {
       <section id="produtos" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-16">
         <div className="text-center">
           <div className="arte-rule-short mx-auto" />
-          <h2 className="mt-5 text-3xl sm:text-4xl">Três formas de brincar com os Santos</h2>
-          <p className="mx-auto mt-3 max-w-xl">Do tabuleiro ao álbum digital — cada produto é uma pequena catequese.</p>
+          <h2 className="mt-5 text-3xl sm:text-4xl">Devoção que vira brincadeira</h2>
+          <p className="mx-auto mt-3 max-w-xl">Nossos quebra-cabeças dos Santos — e a sorte que vem em cada caixa.</p>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {produtos.map(({ icon: Icon, tint, tag, tagClass, nome, desc }) => (
+          {produtos.map(({ icon: Icon, tint, tag, tagClass, nome, desc, href, cta }) => (
             <article key={nome} className="arte-card flex flex-col p-7">
               <div className="flex items-center justify-between">
                 <span className={`arte-ic ${tint}`}><Icon size={26} strokeWidth={1.9} /></span>
@@ -82,30 +85,37 @@ export default function Home() {
               </div>
               <h3 className="mt-5 text-xl">{nome}</h3>
               <p className="mt-2.5 flex-1 text-sm leading-relaxed">{desc}</p>
-              <Link href="/loja" className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: "var(--arte-gold-deep)" }}>
-                Ver na loja <ArrowRight size={15} />
-              </Link>
+              {href ? (
+                <Link href={href} className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: "var(--arte-gold-deep)" }}>
+                  {cta} <ArrowRight size={15} />
+                </Link>
+              ) : (
+                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: "var(--arte-ink-soft)" }}>
+                  Em breve
+                </span>
+              )}
             </article>
           ))}
         </div>
       </section>
 
-      {/* ═══════════════ ÁLBUM — physical to digital ═══════════════ */}
-      <section className="arte-band">
+      {/* ═══════════════ CÓDIGO DA SORTE — premiação ═══════════════ */}
+      <section id="premiacao" className="arte-band scroll-mt-24">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-2">
           <div>
-            <span className="arte-eyebrow"><QrCode size={14} /> Do papel para a coleção</span>
-            <h2 className="mt-4 text-3xl sm:text-4xl">Um código em cada produto vira uma figurinha no seu álbum</h2>
+            <span className="arte-eyebrow"><Clover size={14} /> Código da Sorte</span>
+            <h2 className="mt-4 text-3xl sm:text-4xl">Cada caixa pode premiar você</h2>
             <p className="mt-4">
-              Comprou um produto? Ele traz um código único. Escaneie o QR, revele o Santo
-              e cole a figurinha no seu álbum digital. Acompanhe seu progresso, complete
-              coleções inteiras e descubra a história de cada Santo pelo caminho.
+              Todo quebra-cabeça vem com um <strong>código único</strong> impresso na embalagem.
+              Cadastre-se no site, digite o código em <em>“Tente a sorte”</em> e descubra na hora o
+              seu prêmio: um <strong>desconto de até 50%</strong> — ou, com sorte, um
+              <strong> quebra-cabeça grátis</strong> de outro Santo.
             </p>
             <ol className="mt-7 space-y-4">
               {[
-                { n: "1", t: "Escaneie o código", d: "No pacotinho ou na caixa do produto." },
-                { n: "2", t: "Revele a figurinha", d: "Um Santo da coleção aparece — pode ser raro!" },
-                { n: "3", t: "Cole no álbum", d: "Ele entra na sua coleção e conta sua história." },
+                { n: "1", t: "Compre e receba o código", d: "Ele vem impresso na caixa do seu quebra-cabeça." },
+                { n: "2", t: "Cadastre-se e tente a sorte", d: "Digite o código no seu perfil. Comprou 5 caixas? São 5 tentativas." },
+                { n: "3", t: "Ganhe e use na próxima", d: "O prêmio vira um voucher para levar outro Santo da coleção." },
               ].map((s) => (
                 <li key={s.n} className="flex gap-4">
                   <span className="arte-ic arte-ic-gold shrink-0" style={{ width: 40, height: 40, borderRadius: 12, fontWeight: 700 }}>{s.n}</span>
@@ -116,10 +126,29 @@ export default function Home() {
                 </li>
               ))}
             </ol>
+            <Link href="/como-funciona" className="arte-btn arte-btn-primary mt-8">
+              Entenda a premiação <ArrowRight size={16} />
+            </Link>
           </div>
 
-          {/* Álbum com os Santos reais do catálogo */}
-          <AlbumVitrine />
+          {/* Bilhete premiado (ilustração) */}
+          <div className="grid place-items-center">
+            <div className="w-full max-w-sm rounded-3xl p-8 text-center" style={{ background: "linear-gradient(150deg, rgba(228,203,144,0.5), rgba(150,190,160,0.35))", border: "1px solid var(--arte-line)", boxShadow: "0 24px 60px -30px rgba(59,50,46,0.5)" }}>
+              <span className="arte-ic arte-ic-gold mx-auto" style={{ width: 54, height: 54 }}><Ticket size={26} /></span>
+              <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--arte-gold-deep)" }}>Seu prêmio</p>
+              <p className="mt-1 text-6xl font-bold" style={{ color: "var(--arte-ink)" }}>até 50%</p>
+              <p className="mt-1 text-lg">de desconto</p>
+              <div className="my-5 flex items-center gap-3">
+                <span className="h-px flex-1" style={{ background: "var(--arte-line)" }} />
+                <span className="text-xs uppercase tracking-widest" style={{ color: "var(--arte-ink-soft)" }}>ou</span>
+                <span className="h-px flex-1" style={{ background: "var(--arte-line)" }} />
+              </div>
+              <p className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-lg font-bold" style={{ color: "#3B6B4A" }}>
+                <Gift size={18} /> um Santo grátis
+              </p>
+              <p className="mt-4 font-mono text-xs tracking-[0.2em]" style={{ color: "var(--arte-ink-soft)" }}>XXXX-XXXX-XXXX-XXXX</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -162,10 +191,10 @@ export default function Home() {
           <div className="arte-halo" aria-hidden />
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-4xl">Leve a tradição para a sua casa</h2>
-            <p className="mx-auto mt-3 max-w-xl">Descubra nossos produtos e comece a sua coleção de Santos hoje.</p>
+            <p className="mx-auto mt-3 max-w-xl">Descubra nossos quebra-cabeças e comece a sua coleção de Santos hoje.</p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link href="/loja" className="arte-btn arte-btn-primary">Ir para a loja <ArrowRight size={17} /></Link>
-              <Link href="/login" className="arte-btn arte-btn-ghost">Área administrativa</Link>
+              <Link href="/como-funciona" className="arte-btn arte-btn-ghost">Como funciona a premiação</Link>
             </div>
           </div>
         </div>

@@ -12,11 +12,12 @@ export function PedidoAcoes({ id, status }: { id: string; status: PedidoStatus }
   const [pending, startTransition] = useTransition()
   const [rotulo, setRotulo] = useState<string | null>(null)
 
-  function executar(fn: (id: string) => Promise<{ ok: true }>, msg: string, nome: string) {
+  function executar(fn: (id: string) => Promise<{ ok: boolean; error?: string }>, msg: string, nome: string) {
     setRotulo(nome)
     startTransition(async () => {
-      await fn(id)
-      toast.success(msg)
+      const res = await fn(id)
+      if (res.ok) toast.success(msg)
+      else toast.error(res.error ?? "Não foi possível atualizar.")
       router.refresh()
       setRotulo(null)
     })

@@ -3,11 +3,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeft, Church, Download, QrCode, ShoppingBag } from "lucide-react"
+import { ArrowLeft, Church, ShoppingBag } from "lucide-react"
 import { obterSanto, baseUrl } from "../_actions/santos-actions"
 import { listarProdutosDoSanto } from "../../loja/_actions/loja-actions"
 import { formatBRL } from "@/lib/money"
-import { gerarQrPng } from "@/lib/qr"
 
 export const revalidate = 3600
 
@@ -29,8 +28,7 @@ export default async function SantoPage({ params }: { params: Promise<{ slug: st
   const s = await obterSanto(slug)
   if (!s) notFound()
 
-  const url = `${baseUrl()}/santos/${s.slug}`
-  const [qr, produtos] = await Promise.all([gerarQrPng(url), listarProdutosDoSanto(s.slug)])
+  const produtos = await listarProdutosDoSanto(s.slug)
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -119,28 +117,6 @@ export default async function SantoPage({ params }: { params: Promise<{ slug: st
           </div>
         </section>
       )}
-
-      {/* QR da embalagem */}
-      <div className="arte-card mt-10 flex flex-col items-center gap-5 p-7 sm:flex-row sm:items-center">
-        <div style={{ width: 150, height: 150, flexShrink: 0, background: "#fff", padding: 8, border: "1px solid var(--arte-line)", borderRadius: 12 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={qr} alt={`QR de ${s.nome}`} style={{ width: "100%", height: "100%" }} />
-        </div>
-        <div className="flex-1 text-center sm:text-left">
-          <span className="arte-eyebrow"><QrCode size={14} /> QR desta página</span>
-          <h3 className="mt-1 text-xl">Para a embalagem do quebra-cabeça</h3>
-          <p className="mt-1 text-sm">
-            Este QR aponta para esta página. Baixe e use no desenho da embalagem — quem escanear cai aqui,
-            na história do Santo.
-          </p>
-          <code className="mt-2 inline-block text-xs" style={{ color: "var(--arte-ink-soft)", wordBreak: "break-all" }}>{url}</code>
-          <div className="mt-4">
-            <a href={qr} download={`qr-${s.slug}.png`} className="arte-btn arte-btn-ghost arte-btn-sm">
-              <Download size={15} /> Baixar QR (PNG)
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { ShoppingCart, Check, Minus, Plus } from "lucide-react"
 import { useCarrinho, type ItemCarrinho } from "./cart-context"
 
-export function AddToCart({ item, estoque }: { item: Omit<ItemCarrinho, "qtd">; estoque: number }) {
+export function AddToCart({ item, estoque }: { item: Omit<ItemCarrinho, "qtd" | "estoque">; estoque: number }) {
   const { adicionar } = useCarrinho()
   const router = useRouter()
   const [qtd, setQtd] = useState(1)
@@ -15,7 +15,7 @@ export function AddToCart({ item, estoque }: { item: Omit<ItemCarrinho, "qtd">; 
 
   function adicionarAoCarrinho(irParaCarrinho = false) {
     if (semEstoque) return
-    adicionar(item, qtd)
+    adicionar({ ...item, estoque }, qtd)
     setAdd(true)
     setTimeout(() => setAdd(false), 1500)
     if (irParaCarrinho) router.push("/loja/carrinho")

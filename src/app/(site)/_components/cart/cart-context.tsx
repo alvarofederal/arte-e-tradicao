@@ -9,6 +9,7 @@ export interface ItemCarrinho {
   slug: string
   precoCentavos: number
   imagem: string | null
+  estoque: number
   qtd: number
 }
 
@@ -44,20 +45,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [itens, pronto])
 
   function adicionar(item: Omit<ItemCarrinho, "qtd">, qtd = 1) {
+    const teto = item.estoque > 0 ? item.estoque : 0
     setItens((prev) => {
       const i = prev.findIndex((x) => x.produtoId === item.produtoId)
       if (i >= 0) {
         const copia = [...prev]
-        copia[i] = { ...copia[i], qtd: copia[i].qtd + qtd }
+        // Atualiza estoque para o valor mais recente e limita a quantidade a ele.
+        const novaQtd = Math.min(copia[i].qtd + qtd, teto)
+        copia[i] = { ...copia[i], ...item, qtd: Math.max(1, novaQtd) }
         return copia
       }
-      return [...prev, { ...item, qtd }]
+      return [...prev, { ...item, qtd: Math.min(qtd, teto) || 1 }]
     })
   }
   function definirQtd(produtoId: string, qtd: number) {
     setItens((prev) => prev.flatMap((x) => {
       if (x.produtoId !== produtoId) return [x]
-      const n = Math.max(0, qtd)
+      const teto = x.estoque > 0 ? x.estoque : 1
+      const n = Math.min(Math.max(0, qtd), teto)
       return n === 0 ? [] : [{ ...x, qtd: n }]
     }))
   }

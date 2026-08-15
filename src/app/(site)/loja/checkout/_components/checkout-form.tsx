@@ -177,7 +177,7 @@ export function CheckoutForm({
                 <option value="">Nenhum</option>
                 {vouchers.map((v) => (
                   <option key={v.codigo} value={v.codigo}>
-                    {v.descontoPercent}% — exceto {v.santoExcluidoNome} ({v.codigo})
+                    {v.descontoPercent >= 100 ? "Grátis" : `${v.descontoPercent}%`} — exceto {v.santoExcluidoNome} ({v.codigo})
                   </option>
                 ))}
               </select>

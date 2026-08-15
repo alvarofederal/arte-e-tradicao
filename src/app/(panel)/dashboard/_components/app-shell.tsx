@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
-import { LayoutDashboard, Palette, Brain, Package, Tags, ShoppingBag, Clover, Users, X, LogOut, Cross } from "lucide-react"
+import { LayoutDashboard, Package, Tags, ShoppingBag, Clover, Church, Users, X, LogOut, Cross } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { TopNavbar } from "./top-navbar"
 
@@ -19,14 +19,14 @@ import { TopNavbar } from "./top-navbar"
    7 → Relatórios
    ──────────────────────────────────────────────────────────────── */
 
+// Cards e Jogo da Memória estão pausados — fora do menu por ora (rotas mantidas).
 const nav: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/dashboard",           label: "Visão Geral",      icon: LayoutDashboard },
   { href: "/dashboard/pedidos",   label: "Pedidos",          icon: ShoppingBag     },
   { href: "/dashboard/produtos",  label: "Produtos",         icon: Package         },
   { href: "/dashboard/categorias", label: "Categorias",      icon: Tags            },
+  { href: "/dashboard/santos",    label: "Santos & QR",      icon: Church          },
   { href: "/dashboard/sorte",     label: "Código da Sorte",  icon: Clover          },
-  { href: "/dashboard/cards",     label: "Cards dos Santos", icon: Palette         },
-  { href: "/dashboard/memoria",   label: "Jogo da Memória",  icon: Brain           },
 ]
 
 const lojistaNav = nav

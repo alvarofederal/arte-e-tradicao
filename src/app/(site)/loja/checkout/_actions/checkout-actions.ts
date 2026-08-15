@@ -40,7 +40,8 @@ async function carregarItens(itens: { produtoId: string; qtd: number }[]) {
 
   const linhas: {
     produtoId: string; sku: string; nome: string; slug: string
-    imagem: string | null; precoCentavos: number; qtd: number; santoId: string | null
+    imagem: string | null; precoCentavos: number; qtd: number
+    santoId: string | null; estoque: number
   }[] = []
   for (const item of itens) {
     const p = porId.get(item.produtoId)
@@ -49,6 +50,7 @@ async function carregarItens(itens: { produtoId: string; qtd: number }[]) {
       produtoId: p.id, sku: p.sku, nome: p.nome, slug: p.slug,
       imagem: p.imagem || p.santo?.imagem || null,
       precoCentavos: p.precoCentavos, qtd: item.qtd, santoId: p.santoId,
+      estoque: p.estoque,
     })
   }
   return linhas
@@ -110,6 +112,18 @@ export async function criarPedido(input: CriarPedidoInput): Promise<CriarPedidoR
   const linhas = await carregarItens(v.itens)
   if (!linhas) return { ok: false, error: "Um dos produtos ficou indisponível. Revise o carrinho." }
 
+  // Estoque — checagem amigável antes de gravar (a baixa definitiva é atômica, abaixo).
+  const semEstoque = linhas.find((l) => l.qtd > l.estoque)
+  if (semEstoque) {
+    return {
+      ok: false,
+      error:
+        semEstoque.estoque > 0
+          ? `Estoque insuficiente para "${semEstoque.nome}" (restam ${semEstoque.estoque}).`
+          : `"${semEstoque.nome}" está esgotado. Remova-o do carrinho.`,
+    }
+  }
+
   const subtotalCentavos = linhas.reduce((s, i) => s + i.precoCentavos * i.qtd, 0)
   if (subtotalCentavos <= 0) return { ok: false, error: "Valor total inválido." }
 
@@ -136,11 +150,24 @@ export async function criarPedido(input: CriarPedidoInput): Promise<CriarPedidoR
       })
       const numero = (ultimo?.numero ?? 1000) + 1 // pedidos começam em #1001
 
+      // Baixa de estoque atômica e segura (impede venda além do disponível).
+      for (const l of linhas) {
+        const upd = await tx.produto.updateMany({
+          where: { id: l.produtoId, estoque: { gte: l.qtd } },
+          data: { estoque: { decrement: l.qtd } },
+        })
+        if (upd.count === 0) throw new Error(`ESTOQUE:${l.nome}`)
+      }
+
+      // Total zero (prêmio grátis) já entra como PAGO — nada a pagar.
+      const gratis = totalCentavos === 0
+
       const criado = await tx.pedido.create({
         data: {
           numero,
           userId,
-          status: "AGUARDANDO_PAGAMENTO",
+          status: gratis ? "PAGO" : "AGUARDANDO_PAGAMENTO",
+          pagoEm: gratis ? new Date() : null,
           subtotalCentavos,
           descontoCentavos,
           totalCentavos,
@@ -175,8 +202,12 @@ export async function criarPedido(input: CriarPedidoInput): Promise<CriarPedidoR
 
     return { ok: true, id: pedido.id, numero: pedido.numero }
   } catch (e) {
-    if ((e as Error).message === "VOUCHER_USADO") {
+    const msg = (e as Error).message
+    if (msg === "VOUCHER_USADO") {
       return { ok: false, error: "O voucher acabou de ser usado em outro pedido." }
+    }
+    if (msg.startsWith("ESTOQUE:")) {
+      return { ok: false, error: `Estoque insuficiente para "${msg.slice(8)}". Alguém comprou antes — ajuste a quantidade.` }
     }
     console.error("Erro ao criar pedido:", e)
     return { ok: false, error: "Não foi possível registrar o pedido. Tente novamente." }

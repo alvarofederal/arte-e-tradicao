@@ -37,10 +37,13 @@ export default function CarrinhoPage() {
                   <Link href={`/loja/${it.slug}`} className="block truncate font-semibold" style={{ color: "var(--arte-ink)" }}>{it.nome}</Link>
                   <span className="text-sm" style={{ color: "var(--arte-gold-deep)" }}>{formatBRL(it.precoCentavos)}</span>
                 </div>
-                <div className="inline-flex items-center gap-1 rounded-full border" style={{ borderColor: "var(--arte-line)" }}>
-                  <button onClick={() => definirQtd(it.produtoId, it.qtd - 1)} className="grid h-8 w-8 place-items-center rounded-full arte-navlink" aria-label="Menos"><Minus size={14} /></button>
-                  <span className="w-6 text-center text-sm font-bold" style={{ color: "var(--arte-ink)" }}>{it.qtd}</span>
-                  <button onClick={() => definirQtd(it.produtoId, it.qtd + 1)} className="grid h-8 w-8 place-items-center rounded-full arte-navlink" aria-label="Mais"><Plus size={14} /></button>
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="inline-flex items-center gap-1 rounded-full border" style={{ borderColor: "var(--arte-line)" }}>
+                    <button onClick={() => definirQtd(it.produtoId, it.qtd - 1)} className="grid h-8 w-8 place-items-center rounded-full arte-navlink" aria-label="Menos"><Minus size={14} /></button>
+                    <span className="w-6 text-center text-sm font-bold" style={{ color: "var(--arte-ink)" }}>{it.qtd}</span>
+                    <button onClick={() => definirQtd(it.produtoId, it.qtd + 1)} disabled={it.qtd >= it.estoque} className="grid h-8 w-8 place-items-center rounded-full arte-navlink disabled:opacity-30" aria-label="Mais"><Plus size={14} /></button>
+                  </div>
+                  {it.qtd >= it.estoque && <span className="text-[0.62rem]" style={{ color: "var(--arte-ink-soft)" }}>máx. {it.estoque}</span>}
                 </div>
                 <button onClick={() => remover(it.produtoId)} className="rounded-lg p-2 hover:opacity-70" style={{ color: "#B87F7C" }} aria-label="Remover"><Trash2 size={16} /></button>
               </div>

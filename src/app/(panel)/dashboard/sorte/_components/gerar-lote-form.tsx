@@ -9,6 +9,13 @@ import { gerarLote } from "../_actions/sorte-admin-actions"
 interface SantoOpcao { id: string; nome: string; numero: number | null }
 interface Faixa { descontoPercent: number; quantidade: number }
 
+type TipoPremio = "desconto" | "gratis" | "sem"
+function tipoDe(p: number): TipoPremio {
+  if (p >= 100) return "gratis"
+  if (p <= 0) return "sem"
+  return "desconto"
+}
+
 export function GerarLoteForm({ santos }: { santos: SantoOpcao[] }) {
   const router = useRouter()
   const [santoId, setSantoId] = useState("")
@@ -21,6 +28,10 @@ export function GerarLoteForm({ santos }: { santos: SantoOpcao[] }) {
 
   function setFaixa(i: number, campo: keyof Faixa, valor: number) {
     setFaixas((prev) => prev.map((f, idx) => (idx === i ? { ...f, [campo]: valor } : f)))
+  }
+  function setTipo(i: number, tipo: TipoPremio) {
+    const valor = tipo === "gratis" ? 100 : tipo === "sem" ? 0 : 10
+    setFaixa(i, "descontoPercent", valor)
   }
   function addFaixa() {
     setFaixas((prev) => [...prev, { descontoPercent: 20, quantidade: 20 }])
@@ -84,22 +95,34 @@ export function GerarLoteForm({ santos }: { santos: SantoOpcao[] }) {
           </button>
         </div>
         <div className="mt-2 space-y-2">
-          {faixas.map((f, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <input type="number" min={1} max={50} value={f.descontoPercent} onChange={(e) => setFaixa(i, "descontoPercent", +e.target.value)} className="w-16 rounded-lg border px-2 py-1.5 text-sm" style={inputStyle} />
-                <span className="dash-muted text-sm">%</span>
+          {faixas.map((f, i) => {
+            const tipo = tipoDe(f.descontoPercent)
+            return (
+              <div key={i} className="flex flex-wrap items-center gap-2">
+                <select value={tipo} onChange={(e) => setTipo(i, e.target.value as TipoPremio)} className="rounded-lg border px-2 py-1.5 text-sm" style={inputStyle}>
+                  <option value="desconto">Desconto</option>
+                  <option value="gratis">Grátis</option>
+                  <option value="sem">Sem prêmio</option>
+                </select>
+                {tipo === "desconto" && (
+                  <div className="flex items-center gap-1">
+                    <input type="number" min={1} max={50} value={f.descontoPercent} onChange={(e) => setFaixa(i, "descontoPercent", +e.target.value)} className="w-16 rounded-lg border px-2 py-1.5 text-sm" style={inputStyle} />
+                    <span className="dash-muted text-sm">%</span>
+                  </div>
+                )}
+                <span className="dash-muted text-sm">×</span>
+                <input type="number" min={1} max={5000} value={f.quantidade} onChange={(e) => setFaixa(i, "quantidade", +e.target.value)} className="w-20 rounded-lg border px-2 py-1.5 text-sm" style={inputStyle} />
+                <span className="dash-muted text-sm">códigos</span>
+                {faixas.length > 1 && (
+                  <button type="button" onClick={() => removerFaixa(i)} className="ml-auto rounded-lg p-1.5 hover:opacity-70" style={{ color: "#dc2626" }}><Trash2 size={14} /></button>
+                )}
               </div>
-              <span className="dash-muted text-sm">×</span>
-              <input type="number" min={1} max={5000} value={f.quantidade} onChange={(e) => setFaixa(i, "quantidade", +e.target.value)} className="w-24 rounded-lg border px-2 py-1.5 text-sm" style={inputStyle} />
-              <span className="dash-muted text-sm">códigos</span>
-              {faixas.length > 1 && (
-                <button type="button" onClick={() => removerFaixa(i)} className="ml-auto rounded-lg p-1.5 hover:opacity-70" style={{ color: "#dc2626" }}><Trash2 size={14} /></button>
-              )}
-            </div>
-          ))}
+            )
+          })}
         </div>
-        <p className="dash-muted mt-2 text-xs">Total: <strong>{total}</strong> código(s)</p>
+        <p className="dash-muted mt-2 text-xs">
+          Total: <strong>{total}</strong> código(s). Dica: numa rodada de 100, ~10 grátis difundem o programa.
+        </p>
       </div>
 
       <label className="mt-4 flex items-center gap-2 text-sm">

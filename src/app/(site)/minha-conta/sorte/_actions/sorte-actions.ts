@@ -11,8 +11,10 @@ const schema = z.object({ codigo: z.string().min(1, "Digite o código.") })
 export type ResgateResult =
   | {
       ok: true
+      premiado: true
       voucher: { codigo: string; descontoPercent: number; santoExcluidoNome: string; expiraEm: string }
     }
+  | { ok: true; premiado: false } // código válido, mas não foi contemplado desta vez
   | { ok: false; error: string }
 
 export async function resgatarCodigo(input: { codigo: string }): Promise<ResgateResult> {
@@ -40,6 +42,22 @@ export async function resgatarCodigo(input: { codigo: string }): Promise<Resgate
         registro.resgatadoPorId === userId
           ? "Você já resgatou este código. Veja seu voucher abaixo."
           : "Este código já foi utilizado.",
+    }
+  }
+
+  // Código "sem prêmio" (descontoPercent 0): consome o código, mas não gera voucher.
+  if (registro.descontoPercent <= 0) {
+    try {
+      const upd = await db.codigoSorte.updateMany({
+        where: { id: registro.id, resgatado: false },
+        data: { resgatado: true, resgatadoPorId: userId, resgatadoEm: new Date() },
+      })
+      if (upd.count === 0) return { ok: false, error: "Este código acabou de ser utilizado." }
+      revalidatePath("/minha-conta/sorte")
+      return { ok: true, premiado: false }
+    } catch (e) {
+      console.error("Erro ao resgatar código:", e)
+      return { ok: false, error: "Não foi possível resgatar agora. Tente novamente." }
     }
   }
 
@@ -77,6 +95,7 @@ export async function resgatarCodigo(input: { codigo: string }): Promise<Resgate
     revalidatePath("/minha-conta/sorte")
     return {
       ok: true,
+      premiado: true,
       voucher: {
         codigo: voucherCodigo,
         descontoPercent: registro.descontoPercent,

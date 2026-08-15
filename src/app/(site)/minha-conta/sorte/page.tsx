@@ -44,20 +44,25 @@ export default async function SortePage() {
           </p>
         ) : (
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {disponiveis.map((v) => (
-              <div key={v.id} className="arte-card overflow-hidden p-0">
-                <div className="flex items-center justify-between px-5 py-4" style={{ background: "linear-gradient(120deg, rgba(150,190,160,0.35), rgba(228,203,144,0.25))" }}>
-                  <span className="text-3xl font-bold" style={{ color: "#3B6B4A" }}>{v.descontoPercent}%</span>
-                  <span className="rounded-full bg-white/70 px-2.5 py-1 text-xs font-bold tracking-wider" style={{ color: "var(--arte-ink)" }}>{v.codigo}</span>
+            {disponiveis.map((v) => {
+              const gratis = v.descontoPercent >= 100
+              return (
+                <div key={v.id} className="arte-card overflow-hidden p-0">
+                  <div className="flex items-center justify-between px-5 py-4" style={{ background: "linear-gradient(120deg, rgba(150,190,160,0.35), rgba(228,203,144,0.25))" }}>
+                    <span className="text-3xl font-bold" style={{ color: "#3B6B4A" }}>{gratis ? "Grátis" : `${v.descontoPercent}%`}</span>
+                    <span className="rounded-full bg-white/70 px-2.5 py-1 text-xs font-bold tracking-wider" style={{ color: "var(--arte-ink)" }}>{v.codigo}</span>
+                  </div>
+                  <div className="px-5 py-4 text-sm">
+                    <p>
+                      {gratis ? "Um quebra-cabeça grátis" : "Desconto"} em qualquer Santo, <strong>exceto {v.santoExcluidoNome}</strong>.
+                    </p>
+                    <p className="mt-1 inline-flex items-center gap-1.5" style={{ color: "var(--arte-ink-soft)" }}>
+                      <Clock size={14} /> Válido até {dataBR(v.expiraEm)}
+                    </p>
+                  </div>
                 </div>
-                <div className="px-5 py-4 text-sm">
-                  <p>Desconto em qualquer Santo, <strong>exceto {v.santoExcluidoNome}</strong>.</p>
-                  <p className="mt-1 inline-flex items-center gap-1.5" style={{ color: "var(--arte-ink-soft)" }}>
-                    <Clock size={14} /> Válido até {dataBR(v.expiraEm)}
-                  </p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </section>
@@ -69,7 +74,7 @@ export default async function SortePage() {
           <ul className="mt-3 space-y-2">
             {usadosOuExpirados.map((v) => (
               <li key={v.id} className="flex items-center justify-between rounded-xl border px-4 py-2.5 text-sm" style={{ borderColor: "var(--arte-line)", opacity: 0.7 }}>
-                <span className="font-semibold">{v.descontoPercent}% · {v.codigo}</span>
+                <span className="font-semibold">{v.descontoPercent >= 100 ? "Grátis" : `${v.descontoPercent}%`} · {v.codigo}</span>
                 <span style={{ color: "var(--arte-ink-soft)" }}>{v.usado ? "Utilizado" : "Expirado"}</span>
               </li>
             ))}
