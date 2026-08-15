@@ -69,6 +69,18 @@ export async function alterarRole(id: string, role: string): Promise<{ ok: boole
   }
 }
 
+export async function verificarEmail(id: string): Promise<{ ok: boolean; error?: string }> {
+  await exigirSuperAdmin()
+  try {
+    await db.user.update({ where: { id }, data: { emailVerified: new Date() } })
+    revalidatePath("/dashboard/usuarios")
+    return { ok: true }
+  } catch (e) {
+    console.error("Erro ao verificar e-mail:", e)
+    return { ok: false, error: "Não foi possível verificar." }
+  }
+}
+
 export async function alternarAtivo(id: string): Promise<{ ok: boolean; error?: string }> {
   const eu = await exigirSuperAdmin()
   if (id === eu.id) return { ok: false, error: "Você não pode desativar a si mesmo." }

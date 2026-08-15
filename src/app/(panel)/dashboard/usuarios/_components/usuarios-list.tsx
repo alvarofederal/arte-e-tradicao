@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { BadgeCheck, KeyRound, Mail, Power, ShieldCheck } from "lucide-react"
+import { BadgeCheck, KeyRound, Mail, MailCheck, Power, ShieldCheck } from "lucide-react"
 import type { UsuarioRegistro } from "../_actions/usuarios-actions"
-import { alterarRole, alternarAtivo } from "../_actions/usuarios-actions"
+import { alterarRole, alternarAtivo, verificarEmail } from "../_actions/usuarios-actions"
 
 const ROLE_LABEL: Record<string, string> = {
   SUPER_ADMIN: "Administrador",
@@ -43,6 +43,14 @@ export function UsuariosList({ initial }: { initial: UsuarioRegistro[] }) {
     const res = await alternarAtivo(u.id)
     setBusy(null)
     if (res.ok) { toast.success(u.ativo ? "Usuário desativado." : "Usuário ativado."); router.refresh() }
+    else toast.error(res.error ?? "Falhou.")
+  }
+
+  async function verificar(u: UsuarioRegistro) {
+    setBusy(u.id)
+    const res = await verificarEmail(u.id)
+    setBusy(null)
+    if (res.ok) { toast.success("E-mail verificado."); router.refresh() }
     else toast.error(res.error ?? "Falhou.")
   }
 
@@ -99,6 +107,17 @@ export function UsuariosList({ initial }: { initial: UsuarioRegistro[] }) {
                     <option value="LOJISTA">Equipe (lojista)</option>
                     <option value="SUPER_ADMIN">Administrador</option>
                   </select>
+                  {!u.verificado && (
+                    <button
+                      onClick={() => verificar(u)}
+                      disabled={busy === u.id}
+                      className="rounded-lg p-2 hover:opacity-70 disabled:opacity-40"
+                      style={{ color: "#3B6B4A" }}
+                      title="Verificar e-mail manualmente"
+                    >
+                      <MailCheck size={16} />
+                    </button>
+                  )}
                   <button
                     onClick={() => toggleAtivo(u)}
                     disabled={busy === u.id}
