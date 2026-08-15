@@ -14,9 +14,14 @@ export interface SantoDetalhe extends SantoResumo {
   oracao: string
 }
 
-/** URL pública base (para os QR codes das embalagens). */
+/** URL pública base (para os QR codes das embalagens).
+ *  O QR vai IMPRESSO na caixa — nunca pode apontar para localhost.
+ *  Prioriza NEXT_PUBLIC_SITE_URL (domínio próprio); ignora valores locais. */
+const URL_PRODUCAO = "https://arteetradicao.vercel.app"
 export function baseUrl(): string {
-  return (process.env.NEXT_PUBLIC_URL || "https://arteetradicao.vercel.app").replace(/\/+$/, "")
+  const cand = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_URL || ""
+  if (cand && !/localhost|127\.0\.0\.1/.test(cand)) return cand.replace(/\/+$/, "")
+  return URL_PRODUCAO
 }
 
 export async function listarSantos(): Promise<SantoResumo[]> {
