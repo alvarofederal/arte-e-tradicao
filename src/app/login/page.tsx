@@ -3,9 +3,19 @@ import { redirect } from "next/navigation"
 import { LoginForm } from "./_components/login-form"
 import Link from "next/link"
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>
+}) {
+  const { callbackUrl } = await searchParams
+  const safeCallback =
+    callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
+      ? callbackUrl
+      : undefined
+
   const session = await auth()
-  if (session?.user) redirect("/dashboard")
+  if (session?.user) redirect(safeCallback ?? "/dashboard")
 
   return (
     <div
@@ -67,11 +77,11 @@ export default async function LoginPage() {
           </p>
         </div>
 
-        <LoginForm />
+        <LoginForm callbackUrl={safeCallback} />
 
         <p className="text-center text-xs mt-6" style={{ color: "rgba(255,255,255,0.20)" }}>
           Ainda não tem conta?{" "}
-          <Link href="/register" className="font-semibold transition-colors hover:text-white" style={{ color: "#C9A24B" }}>
+          <Link href={safeCallback ? `/register?callbackUrl=${encodeURIComponent(safeCallback)}` : "/register"} className="font-semibold transition-colors hover:text-white" style={{ color: "#C9A24B" }}>
             Criar conta
           </Link>
         </p>

@@ -28,7 +28,7 @@ const labelStyle: React.CSSProperties = {
   letterSpacing: "0.06em",
 }
 
-export function LoginForm() {
+export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
   const [loading, setLoading]           = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [formData, setFormData]         = useState({ email: "", password: "" })
@@ -41,7 +41,7 @@ export function LoginForm() {
       const res  = await fetch("/api/auth/login-and-redirect", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(formData),
+        body:    JSON.stringify({ ...formData, callbackUrl }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -70,7 +70,7 @@ export function LoginForm() {
   const handleGoogle = async () => {
     setGoogleLoading(true)
     try {
-      await signIn("google", { callbackUrl: "/dashboard", redirect: true })
+      await signIn("google", { callbackUrl: callbackUrl ?? "/dashboard", redirect: true })
     } catch {
       toast.error("Erro ao fazer login com Google")
       setGoogleLoading(false)

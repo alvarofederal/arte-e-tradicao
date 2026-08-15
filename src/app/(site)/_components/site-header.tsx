@@ -1,6 +1,8 @@
 // Cabeçalho do site público — navbar em vidro, logo com cruz dourada.
 import Link from "next/link";
 import { Cross, ShoppingBag } from "lucide-react";
+import { CartButton } from "./cart/cart-button";
+import { AccountLink } from "./account-link";
 
 const nav = [
   { href: "/#produtos", label: "Produtos" },
@@ -36,9 +38,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2.5">
-          <Link href="/login" className="arte-navlink hidden text-sm sm:inline">
-            Entrar
-          </Link>
+          <AccountLink />
+          <CartButton />
           <Link href="/loja" className="arte-btn arte-btn-primary arte-btn-sm">
             <ShoppingBag size={16} />
             <span className="hidden sm:inline">Loja</span>

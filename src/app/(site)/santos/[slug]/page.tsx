@@ -5,6 +5,8 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft, Church, Download, QrCode, ShoppingBag } from "lucide-react"
 import { obterSanto, baseUrl } from "../_actions/santos-actions"
+import { listarProdutosDoSanto } from "../../loja/_actions/loja-actions"
+import { formatBRL } from "@/lib/money"
 import { gerarQrPng } from "@/lib/qr"
 
 export const revalidate = 3600
@@ -28,7 +30,7 @@ export default async function SantoPage({ params }: { params: Promise<{ slug: st
   if (!s) notFound()
 
   const url = `${baseUrl()}/santos/${s.slug}`
-  const qr = await gerarQrPng(url)
+  const [qr, produtos] = await Promise.all([gerarQrPng(url), listarProdutosDoSanto(s.slug)])
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -77,12 +79,46 @@ export default async function SantoPage({ params }: { params: Promise<{ slug: st
           )}
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/loja" className="arte-btn arte-btn-primary">
-              <ShoppingBag size={17} /> Ver na loja
-            </Link>
+            {produtos.length > 0 ? (
+              <Link href={`/loja/${produtos[0].slug}`} className="arte-btn arte-btn-primary">
+                <ShoppingBag size={17} /> Comprar o quebra-cabeça
+              </Link>
+            ) : (
+              <Link href="/loja" className="arte-btn arte-btn-ghost">
+                <ShoppingBag size={17} /> Ver a loja
+              </Link>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Produtos deste Santo */}
+      {produtos.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-2xl sm:text-3xl">Quebra-cabeça{produtos.length > 1 ? "s" : ""} deste Santo</h2>
+          <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {produtos.map((p) => (
+              <Link key={p.id} href={`/loja/${p.slug}`} className="arte-card group overflow-hidden">
+                <div className="grid aspect-square place-items-center overflow-hidden" style={{ background: "linear-gradient(160deg, rgba(228,203,144,0.25), rgba(169,193,217,0.15))" }}>
+                  {p.imagem ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.imagem} alt={p.nome} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <ShoppingBag size={40} style={{ color: "var(--arte-gold-deep)", opacity: 0.5 }} />
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="text-lg leading-snug">{p.nome}</h3>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-lg font-bold" style={{ color: "var(--arte-gold-deep)" }}>{formatBRL(p.precoCentavos)}</span>
+                    <span className="text-sm font-semibold" style={{ color: "var(--arte-gold-deep)" }}>Ver →</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* QR da embalagem */}
       <div className="arte-card mt-10 flex flex-col items-center gap-5 p-7 sm:flex-row sm:items-center">

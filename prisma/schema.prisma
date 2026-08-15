@@ -30,6 +30,7 @@ model User {
   accounts   Account[]
   sessions   Session[]
   authTokens AuthToken[]
+  pedidos    Pedido[]
 
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
@@ -139,6 +140,7 @@ model Santo {
   ativo        Boolean  @default(true)
 
   produtos     Produto[]
+  codigosSorte CodigoSorte[]
 
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
@@ -187,6 +189,111 @@ model Produto {
   @@index([santoId])
   @@index([categoriaId])
   @@map("produtos")
+}
+
+// ─────────────────────────────────────────
+// PEDIDOS (checkout + PIX manual)
+// ─────────────────────────────────────────
+
+model Pedido {
+  id             String       @id @default(cuid())
+  numero         Int          @unique // nº sequencial amigável (calculado no server)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  status         PedidoStatus @default(AGUARDANDO_PAGAMENTO)
+  totalCentavos  Int
+  // Snapshot de contato/entrega (não depende de perfil futuro)
+  nomeCliente    String
+  telefone       String
+  cep            String?
+  endereco       String?      @db.Text
+  observacao     String?      @db.Text
+  // Desconto (voucher do Código da Sorte)
+  subtotalCentavos Int      @default(0)
+  descontoCentavos Int      @default(0)
+  voucherId        String?
+  voucherCodigo    String?
+  // Pagamento (PIX manual — confirmação pelo admin)
+  pagoEm         DateTime?
+  enviadoEm      DateTime?
+  canceladoEm    DateTime?
+
+  itens          ItemPedido[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("pedidos")
+}
+
+model ItemPedido {
+  id            String  @id @default(cuid())
+  pedidoId      String
+  pedido        Pedido  @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  produtoId     String? // sem FK forte: mantém histórico mesmo se o produto sumir
+  sku           String
+  nome          String  // snapshot do nome no momento da compra
+  slug          String  // snapshot do slug (link)
+  imagem        String? @db.LongText
+  precoCentavos Int     // snapshot do preço unitário
+  qtd           Int
+
+  @@index([pedidoId])
+  @@map("itens_pedido")
+}
+
+enum PedidoStatus {
+  AGUARDANDO_PAGAMENTO
+  PAGO
+  ENVIADO
+  CANCELADO
+}
+
+// ─────────────────────────────────────────
+// CÓDIGO DA SORTE (código na embalagem → voucher de desconto)
+// ─────────────────────────────────────────
+
+model CodigoSorte {
+  id              String    @id @default(cuid())
+  codigo          String    @unique // XXXX-XXXX-XXXX-XXXX (sem caracteres ambíguos)
+  santoId         String            // Santo da caixa (fica EXCLUÍDO do voucher)
+  santo           Santo     @relation(fields: [santoId], references: [id])
+  descontoPercent Int               // prêmio pré-atribuído (5..50)
+  lote            String            // rótulo do lote de impressão
+  liberado        Boolean   @default(false) // só vale após liberado pelo admin
+  resgatado       Boolean   @default(false)
+  resgatadoPorId  String?           // user que resgatou (sem FK)
+  resgatadoEm     DateTime?
+  voucherId       String?           // voucher gerado no resgate
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@index([santoId])
+  @@index([lote])
+  @@index([resgatadoPorId])
+  @@map("codigos_sorte")
+}
+
+model Voucher {
+  id                String    @id @default(cuid())
+  codigo            String    @unique
+  userId            String            // dono do voucher (sem FK)
+  descontoPercent   Int
+  santoExcluidoId   String            // Santo que NÃO recebe o desconto (o da caixa)
+  santoExcluidoNome String            // denormalizado para exibição
+  origemCodigoId    String?   @unique // código da sorte de origem
+  expiraEm          DateTime
+  usado             Boolean   @default(false)
+  usadoEm           DateTime?
+  pedidoId          String?           // pedido onde foi aplicado
+
+  criadoEm     DateTime @default(now())
+
+  @@index([userId])
+  @@map("vouchers")
 }
 
 // ─────────────────────────────────────────

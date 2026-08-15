@@ -8,7 +8,15 @@ import { checkRateLimit } from "@/lib/rate-limit"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const { email, password, callbackUrl } = await request.json()
+
+    // Só aceita caminho relativo interno (evita open-redirect).
+    const safeCallback =
+      typeof callbackUrl === "string" &&
+      callbackUrl.startsWith("/") &&
+      !callbackUrl.startsWith("//")
+        ? callbackUrl
+        : "/dashboard"
 
     // ✅ Rate limiting — 10 tentativas por IP a cada 15 minutos (brute-force protection)
     const ip =
@@ -62,7 +70,7 @@ export async function POST(request: NextRequest) {
       data: { sessionToken, userId: user.id, expires },
     })
 
-    const response = NextResponse.json({ success: true, redirectTo: "/dashboard" })
+    const response = NextResponse.json({ success: true, redirectTo: safeCallback })
 
     const cookieName =
       process.env.NODE_ENV === "production"

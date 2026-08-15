@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
       data: {
         email,
         password: hashedPassword,
+        role: "CLIENTE", // cadastro público = comprador (não é staff/admin)
         // Em dev, pula verificação de email automaticamente
         emailVerified: isDev ? new Date() : null,
       },

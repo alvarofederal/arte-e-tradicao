@@ -1,30 +1,21 @@
-// src/app/(site)/loja/page.tsx — Esqueleto do e-commerce (catálogo)
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Puzzle, Brain, Album, ShoppingBag, ArrowLeft, Construction } from "lucide-react";
+// Vitrine da loja — lê os produtos do banco.
+import type { Metadata } from "next"
+import Link from "next/link"
+import { ShoppingBag, ArrowLeft, Package } from "lucide-react"
+import { listarProdutosLoja, listarCategoriasLoja } from "./_actions/loja-actions"
+import { formatBRL } from "@/lib/money"
 
 export const metadata: Metadata = {
   title: "Loja",
-  description: "Quebra-cabeças, jogos da memória e álbuns de figurinhas dos Santos.",
-};
+  description: "Quebra-cabeças dos Santos — arte sacra artesanal para montar e colecionar.",
+}
 
-const categorias = [
-  { icon: Puzzle, tint: "arte-ic-gold", nome: "Quebra-cabeças", n: "Nosso clássico" },
-  { icon: Brain, tint: "arte-ic-sage", nome: "Jogos da Memória", n: "Novidade" },
-  { icon: Album, tint: "arte-ic-blush", nome: "Álbuns de Figurinhas", n: "Novidade" },
-];
+export const dynamic = "force-dynamic"
 
-// Produtos de exemplo (placeholder) — serão substituídos pelo catálogo real do banco.
-const exemplos = [
-  { nome: "Quebra-cabeça · Nossa Senhora Aparecida", pecas: "300 peças", preco: "R$ 89,90", tint: "arte-ic-gold", icon: Puzzle },
-  { nome: "Memória · Santos do Brasil", pecas: "32 cartas", preco: "R$ 59,90", tint: "arte-ic-sage", icon: Brain },
-  { nome: "Álbum · Apóstolos", pecas: "60 figurinhas", preco: "R$ 49,90", tint: "arte-ic-blush", icon: Album },
-  { nome: "Quebra-cabeça · São Francisco", pecas: "500 peças", preco: "R$ 99,90", tint: "arte-ic-gold", icon: Puzzle },
-  { nome: "Memória · Anjos", pecas: "24 cartas", preco: "R$ 54,90", tint: "arte-ic-sage", icon: Brain },
-  { nome: "Álbum · Nossa Senhora", pecas: "48 figurinhas", preco: "R$ 44,90", tint: "arte-ic-blush", icon: Album },
-];
+export default async function Loja({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
+  const { cat } = await searchParams
+  const [produtos, categorias] = await Promise.all([listarProdutosLoja(cat), listarCategoriasLoja()])
 
-export default function Loja() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-14">
       <Link href="/" className="arte-navlink inline-flex items-center gap-1.5 text-sm">
@@ -34,51 +25,51 @@ export default function Loja() {
       <header className="mt-6 text-center">
         <span className="arte-eyebrow"><ShoppingBag size={14} /> Loja Arte &amp; Tradição</span>
         <h1 className="mt-4 text-4xl sm:text-5xl">Nossos produtos</h1>
-        <p className="mx-auto mt-3 max-w-xl">Devoção, arte e brincadeira para todas as idades.</p>
+        <p className="mx-auto mt-3 max-w-xl">Quebra-cabeças dos Santos, artesanais, para montar e colecionar.</p>
       </header>
 
-      {/* Categorias */}
-      <div className="mt-10 grid gap-4 sm:grid-cols-3">
-        {categorias.map(({ icon: Icon, tint, nome, n }) => (
-          <div key={nome} className="arte-card flex items-center gap-4 p-5">
-            <span className={`arte-ic ${tint}`}><Icon size={24} strokeWidth={1.9} /></span>
-            <div>
-              <p className="font-semibold" style={{ color: "var(--arte-ink)" }}>{nome}</p>
-              <p className="text-xs" style={{ color: "var(--arte-ink-soft)" }}>{n}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Filtro por categoria */}
+      {categorias.length > 0 && (
+        <div className="mt-8 flex flex-wrap justify-center gap-2">
+          <Link href="/loja" className={`arte-btn arte-btn-sm ${cat ? "arte-btn-ghost" : "arte-btn-primary"}`}>Tudo</Link>
+          {categorias.map((c) => (
+            <Link key={c.slug} href={`/loja?cat=${c.slug}`} className={`arte-btn arte-btn-sm ${cat === c.slug ? "arte-btn-primary" : "arte-btn-ghost"}`}>
+              {c.nome}
+            </Link>
+          ))}
+        </div>
+      )}
 
-      {/* Aviso de esqueleto */}
-      <div className="arte-card mt-8 flex items-center gap-3 p-4" style={{ background: "rgba(201,162,75,0.10)" }}>
-        <Construction size={18} style={{ color: "var(--arte-gold-deep)" }} />
-        <p className="text-sm" style={{ color: "var(--arte-ink)" }}>
-          Vitrine de exemplo. O catálogo real será conectado ao banco de dados e ao checkout na
-          <strong> Release 2 — E-commerce</strong> (ver <code>specs/002-ecommerce</code>).
-        </p>
-      </div>
-
-      {/* Grade de produtos (placeholder) */}
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {exemplos.map(({ nome, pecas, preco, tint, icon: Icon }) => (
-          <article key={nome} className="arte-card overflow-hidden">
-            <div className="grid aspect-[4/3] place-items-center" style={{ background: "linear-gradient(160deg, rgba(228,203,144,0.25), rgba(169,193,217,0.15))" }}>
-              <span className={`arte-ic ${tint}`} style={{ width: 64, height: 64 }}><Icon size={30} strokeWidth={1.7} /></span>
-            </div>
-            <div className="p-5">
-              <h3 className="text-lg leading-snug">{nome}</h3>
-              <p className="mt-1 text-xs" style={{ color: "var(--arte-ink-soft)" }}>{pecas}</p>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-lg font-bold" style={{ color: "var(--arte-gold-deep)" }}>{preco}</span>
-                <button className="arte-btn arte-btn-ghost arte-btn-sm" disabled title="Disponível na Release 2">
-                  Em breve
-                </button>
+      {produtos.length === 0 ? (
+        <div className="arte-card mx-auto mt-10 max-w-md p-10 text-center">
+          <span className="arte-ic arte-ic-gold mx-auto"><Package size={26} /></span>
+          <h3 className="mt-4 text-xl">Em breve novos produtos</h3>
+          <p className="mt-2 text-sm">Estamos preparando a coleção. Volte logo!</p>
+        </div>
+      ) : (
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {produtos.map((p) => (
+            <Link key={p.id} href={`/loja/${p.slug}`} className="arte-card group overflow-hidden">
+              <div className="grid aspect-square place-items-center overflow-hidden" style={{ background: "linear-gradient(160deg, rgba(228,203,144,0.25), rgba(169,193,217,0.15))" }}>
+                {p.imagem ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={p.imagem} alt={p.nome} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <Package size={44} style={{ color: "var(--arte-gold-deep)", opacity: 0.5 }} />
+                )}
               </div>
-            </div>
-          </article>
-        ))}
-      </div>
+              <div className="p-5">
+                {p.categoriaNome && <span className="arte-eyebrow text-[0.62rem]">{p.categoriaNome}</span>}
+                <h3 className="mt-1 text-lg leading-snug">{p.nome}</h3>
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="text-lg font-bold" style={{ color: "var(--arte-gold-deep)" }}>{formatBRL(p.precoCentavos)}</span>
+                  <span className="text-sm font-semibold" style={{ color: "var(--arte-gold-deep)" }}>Ver →</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
-  );
+  )
 }

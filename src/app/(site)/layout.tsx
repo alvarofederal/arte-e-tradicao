@@ -5,6 +5,7 @@ import { Cormorant_Garamond } from "next/font/google";
 import "./theme-arte.css";
 import { SiteHeader } from "./_components/site-header";
 import { SiteFooter } from "./_components/site-footer";
+import { CartProvider } from "./_components/cart/cart-context";
 
 // Serifa clássica para títulos — evoca missais e arte sacra
 const arteSerif = Cormorant_Garamond({
@@ -25,10 +26,12 @@ export const metadata: Metadata = {
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`${arteSerif.variable} arte-site`}>
-      <SiteHeader />
-      <main>{children}</main>
-      <SiteFooter />
-    </div>
+    <CartProvider>
+      <div className={`${arteSerif.variable} arte-site`}>
+        <SiteHeader />
+        <main>{children}</main>
+        <SiteFooter />
+      </div>
+    </CartProvider>
   );
 }
