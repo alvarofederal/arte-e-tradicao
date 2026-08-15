@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
-import { LayoutDashboard, Palette, Brain, Package, Tags, ShoppingBag, Clover, X, LogOut, Cross } from "lucide-react"
+import { LayoutDashboard, Palette, Brain, Package, Tags, ShoppingBag, Clover, Users, X, LogOut, Cross } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { TopNavbar } from "./top-navbar"
 
@@ -30,7 +30,8 @@ const nav: { href: string; label: string; icon: LucideIcon }[] = [
 ]
 
 const lojistaNav = nav
-const adminNav = nav
+// Só o administrador gerencia usuários/compradores.
+const adminNav = [...nav, { href: "/dashboard/usuarios", label: "Usuários", icon: Users }]
 
 /* ─── Sidebar — sempre dark (identidade de marca) ──────────────── */
 
